@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<{include file="common_before.html"}>
+<link href="../css/preOrder.css" rel="stylesheet">
+<title>确认订单</title>
+</head>
+<body>
+
+<div class="container-fluid">
+<{include file="header.html"}>
+
+
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+
+<div class="panel panel-info">
+<div class="panel-heading clearfix">
+<div class="col-md-4">确认收货信息</div>
+<div class="col-md-2 col-md-offset-6"><span id="edit">编辑<span class="glyphicon glyphicon-pencil"></span></span></div>
+</div>
+<div class="panel-body">
+<p>收货人：<span id="preName"><{$preName}></span></p>
+<p>联系方式：<span id="prePhone"><{$prePhone}></span></p>
+<p>地址：<span id="preAddr"><{$preAddr}></span></p>
+</div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">订单信息修改</h4>
+      </div>
+      <div class="modal-body">
+        <form id="editForm" class="form-horizontal">
+        
+        <div class="form-group">
+    <label for="editName" class="col-sm-2 control-label">收件人</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" name="editName" id="editName" placeholder="收件人">
+    </div><div class="col-sm-4"></div>
+  </div>
+  
+  <div class="form-group">
+    <label for="editPhone" class="col-sm-2 control-label">联系方式</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" name="editPhone" id="editPhone" placeholder="联系方式">
+    </div><div class="col-sm-4"></div>
+  </div>
+  
+  <div class="form-group">
+    <label for="editAddr" class="col-sm-2 control-label">地址</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" name="editAddr" id="editAddr" placeholder="地址">
+    </div><div class="col-sm-4"></div>
+  </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button id="submitEdit" type="button" class="btn btn-primary">保存修改</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<table class="table" style="border:1px solid #ccc">
+<tr class="danger"><td><div class="col-md-5 col-md-offset-1">商品信息</div></td><td>单价</td><td>数量</td><td>小计</td></tr>
+<{foreach $items as $item}>
+<tr>
+<td class="col-md-3"></div><div class="col-md-5"><img  class="img-responsive" src="<{$item->itemimg}>"></div><div class="col-md-5"><{$item->itemname}></div></td>
+<td class="col-md-1"><{$item->itemprice}></td>
+<td class="col-md-1"><{$item->quantity}></td>
+<td class="col-md-1"><{$item->itemprice*$item->quantity}></td>
+</tr>
+<{/foreach}>
+</table>
+
+<div class="row">
+<div class="col-md-3 col-md-offset-5" style="padding-top:10px">总价：<span style="color:red; font-size:18px"><{$totalPrice}></span></div>
+<div class="col-md-2" style="padding-top:10px"><a href="<{$root}>home/shopcar">返回购物车修改</a></div>
+<div class="col-md-2"><a id="submit" href="<{$totalPrice}>" class="btn btn-primary btn-block">提交订单</a></div>
+</div>
+
+</div>
+</div>
+<{include file="footer.html"}>
+</div>
+
+
+
+
+
+<{include file="common_after.html"}>
+<script type="text/javascript" src="../js/jquery.validate.js"></script>
+<script type="text/javascript" src="../js/messages_zh.js"></script>
+<script src="../js/preOrder.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>购物车</title>
+<{include file="common_before.html"}>
+</head>
+<body>
+<div class="container-fluid">
+<{include file="header.html"}>
+
+
+<div class="row" style="min-height:300px">
+<div class="col-md-8 col-md-offset-2">
+
+<table class="table table-striped" style="border:solid 1px #ccc">
+<tr class="info"><td><div class="col-md-5"> <input id="selectAll" type="checkbox" value="false"> 全选</div><div class="col-md-5 col-md-offset-1">商品信息</div></td><td>单价</td><td>数量</td><td>小计</td><td>操作</td></tr>
+<{foreach $items as $item}>
+<tr itemid="<{$item->itemid}>" class="tr<{$item->itemid}>">
+<td class="col-md-3"><div class="col-md-1"><input id="<{$item->itemid}>" name="selected" type="checkbox"> </div><div class="col-md-5"><a href="<{$root}>home/itemDetail?itemid=<{$item->itemid}>" target="_blank"><img  class="img-responsive" src="<{$item->itemimg}>"></a></div><div class="col-md-5"><{$item->itemname}></div></td>
+<td id="itemp<{$item->itemid}>" class="col-md-1"><{$item->itemprice}></td>
+<td class="col-md-1">
+<div class="col-md-12" style="margin-left:-15px">
+<div class="input-group">
+      <input  id="itemq<{$item->itemid}>" type="text" class="form-control" value="<{$item->quantity}>" >
+      <span class="input-group-btn">
+      <div  class="btn-group-vertical btn-group btn-group-xs" role="group">
+       <button class="btn btn-default add" type="button"  style="height:17px; font-size:8px">+</button>
+       <button class="btn btn-default cut" type="button" style="height:18px; font-size:8px">-</button>
+        </div>        
+      </span>
+    </div>
+    </div>
+    </td>
+<td id="itemall<{$item->itemid}>" class="col-md-1"><{$item->itemprice*$item->quantity}></td>
+<td class="col-md-1"><button  class="btn btn-danger btn-sm delete">删除</button></td>
+</tr>
+<{/foreach}>
+
+</table>
+
+<div class="row" style="background:#D9EDF7; height:50px; padding:10px">
+<div class="col-md-3 col-md-offset-7" >
+合计：<span id="totalPrice">0</span></div>
+<div class="col-md-2">
+<button id="settle" class="btn btn-primary btn-block">结算</button>
+</div>
+</div>
+
+
+</div>
+</div>
+
+<{include file="footer.html"}>
+</div>
+
+
+
+
+<{include file="common_after.html"}>
+<script src="../js/shopcar.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+@CHARSET "UTF-8";
+
+.item-img img{height:300px; width:100%}
+.main{margin-top:30px}
+.item-name{margin-top:30px;height:28px; border-bottom:1px solid #ccc; font-size:12px; color:black}
+.item-information{height:28px; font-size:12px;padding-bottom:5px; color:black}
+.item-price{height:40px; font-size:32px ; margin-top:10px; color:red; margin-bottom:10px}
+.item-inventory{font-size:16px; margin-top:15px}

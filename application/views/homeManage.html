@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link href="../css/bootstrap.css" rel="stylesheet">
+</head>
+<body style="font-family:微软雅黑">
+
+<div class="container-fluid">
+<div style="background:#3992D0" class="row">
+<div class="col-sm-12" style='padding-bottom:10px; color:white'><h3 class="text-center">主页商品管理</h3></div>
+</div>
+
+<div class="row">
+<div class="col-sm-4">
+<div class="panel panel-info">
+<div class="panel-heading">
+<div class="row">
+<div class="col-sm-4">特价商品</div>
+<div class="col-sm-4 col-sm-offset-4"><button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#myModal">添加</button></div>
+</div>
+</div>
+  <div class="panel-body">
+    <table class="table table-bordered table-striped">
+    <tr><td>商品ID</td><td>图片</td><td>商品名</td><td>操作</td></tr>
+    <{foreach $bargains as $item}>
+    <tr>
+    <td><{$item.itemid}></td>
+    <td><img style="width:50px;" class="img-responsive" style="width:50px" src="<{$item.itemimg}>"></td>
+    <td><{$item.itemname}></td>
+    <td><a class="btn btn-danger btn-sm" href="<{$root}>admin/deleteFromHome?itemid=<{$item.itemid}>">删除</a></td></tr>
+    <{/foreach}>
+    </table>
+  </div>
+</div>
+</div>
+
+<div class="col-sm-4">
+<div class="panel panel-info">
+<div class="panel-heading">
+<div class="row">
+<div class="col-sm-4">推荐商品</div>
+<div class="col-sm-4 col-sm-offset-4"><button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#myModal">添加</button></div>
+</div></div>
+  <div class="panel-body">
+   <table class="table table-bordered table-striped">
+    <tr><td>商品ID</td><td>图片</td><td>商品名</td><td>操作</td></tr>
+    <{foreach $recommends as $item}>
+    <tr>
+    <td><{$item.itemid}></td>
+    <td><img style="width:50px;" class="img-responsive" style="width:50px" src="<{$item.itemimg}>"></td>
+    <td><{$item.itemname}></td>
+    <td><a class="btn btn-danger btn-sm" href="<{$root}>admin/deleteFromHome?itemid=<{$item.itemid}>">删除</a></td></tr>
+    <{/foreach}>
+    </table>
+  </div>
+</div>
+</div>
+
+<div class="col-sm-4">
+<div class="panel panel-info">
+<div class="panel-heading">
+<div class="row">
+<div class="col-sm-4">热卖商品</div>
+<div class="col-sm-4 col-sm-offset-4"><button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#myModal">添加</button></div>
+</div></div>
+  <div class="panel-body">
+    <table class="table table-bordered table-striped">
+    <tr><td>商品ID</td><td>图片</td><td>商品名</td><td>操作</td></tr>
+    <{foreach $hots as $item}>
+    <tr>
+    <td><{$item.itemid}></td>
+    <td><img class="img-responsive" style="width:50px; " src="<{$item.itemimg}>"></td>
+    <td><{$item.itemname}></td>
+    <td><a class="btn btn-danger btn-sm" href="<{$root}>admin/deleteFromHome?itemid=<{$item.itemid}>">删除</a></td></tr>
+    <{/foreach}>
+    </table>
+  </div>
+</div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">添加主页商品</h4>
+      </div>
+      <div class="modal-body">
+        <form id="addForm" class='form-horizontal'>
+       <div class="form-group">
+    <label for="additemid" class="col-sm-2 control-label">商品ID</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" id="additemid" placeholder="">
+    </div>
+  </div>
+  
+   <div class="form-group">
+    <label class="col-sm-2 control-label">类型</label>
+    <div class="col-sm-4 dropdown">
+      <select id="select">
+      <option value="hot">热卖</option>
+      <option value="recommend">推荐</option>
+      <option value="bargains">特价</option>   
+      </select>
+    </div>
+  </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button id="addSubmit" type="button" class="btn btn-primary">添加</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+<script src="../js/jquery.js"></script>
+<script src="../js/bootstrap.js"></script>
+<script src="../js/homeManage.js"></script>
+</body>
+</html>

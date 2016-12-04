@@ -1,0 +1,71 @@
+<!-- header -->
+<div id="header" class="row">
+<div class="col-md-12">
+<!-- nav -->
+<div id="nav" class="row">
+<div class="col-md-10 col-md-offset-1">
+<div class="row">
+<div class="col-md-6">
+<div class="row">
+<div class="col-md-2" style="color:#C40000"><span class="glyphicon glyphicon-home"></span><a href="<{$root}>home/index">首页</a></div>
+<div class="col-md-4"><p>欢迎来到G.fruit！</p></div>
+<div id="isLogin" class="col-md-3"><a href="<{$root}>User/ShowLogin">请登录</a></div>
+<div class="col-md-2"><a href="<{$root}>User/showRegister">注册</a></div>
+</div>
+</div>
+<div class="col-md-5 col-md-offset-1">
+<div class="col-md-3" style="color:#C40000"><span class="glyphicon glyphicon-folder-close"></span><a href="<{$root}>home/shopcar">&nbsp购物车</a></div>
+<div class="col-md-3 col-md-offset-1" style="color:#C40000"><span class="glyphicon glyphicon-tasks"></span><a href="<{$root}>home/showOrder">我的订单</a></div>
+<div class="col-md-3 col-md-offset-1" style="color:#C40000"><span class="glyphicon glyphicon-user"></span><a href="<{$root}>user/userDetail">个人中心</a></div>
+</div>
+</div>
+</div>
+</div>
+<!-- nav end -->
+
+<!-- seek -->
+<div class="row">
+<div class="col-md-3 col-md-offset-1 logo">
+<img class="img-responsive" src="../images/logo.png">
+</div>
+
+<div class="col-md-4 search">
+
+    <form method="post" action="<{$root}>home/searchByInput">
+    <div class="input-group">
+      <input id="search" type="text" class="form-control" name="search" placeholder="搜索...">
+      <span class="input-group-btn">
+        <input id="search-submit" class="btn btn-default" type="submit" value="搜&nbsp&nbsp索">
+      </span>
+      </div>
+      </form>
+    
+</div>
+
+<div class="col-md-2">
+<div id="kind" class="col-md-1">种类<span class="glyphicon glyphicon-menu-down kind-span"></span><div class="kind-list">
+<a target="_blank" href="<{$root}>home/search?searchClass=柠檬&searchBrand=">柠檬</a>
+<a target="_blank" href="<{$root}>home/search?searchClass=橙子&searchBrand=">橙子</a>
+<a target="_blank" href="<{$root}>home/search?searchClass=香蕉&searchBrand=">香蕉</a>
+<a target="_blank" href="<{$root}>home/search?searchClass=火龙果&searchBrand=">火龙果</a>
+<a target="_blank" href="<{$root}>home/search?searchClass=榴莲&searchBrand=">榴莲</a>
+</div></div>
+
+<div id="brand" class="col-md-1">品牌<span id="brand-span" class="glyphicon glyphicon-menu-down"></span><div class="brand-list">
+<a target="_blank" href="<{$root}>home/search?searchClass&searchBrand=红富士">红富士</a>
+<a target="_blank" href="<{$root}>home/search?searchClass&searchBrand=果郡王">果郡王</a>
+<a target="_blank" href="<{$root}>home/search?searchClass&searchBrand=天天果园">天天果园</a>
+<a target="_blank" href="<{$root}>home/search?searchClass&searchBrand=世外桃源">世外桃源</a>
+<a target="_blank" href="<{$root}>home/search?searchClass&searchBrand=花果山">花果山</a>
+
+</div></div>
+</div>
+
+
+</div>
+<!-- seek end -->
+
+
+</div>
+</div>
+<!-- header end -->

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>后台管理</title>
+<link href="../css/bootstrap.css" rel="stylesheet">
+</head>
+<body style="font-family:微软雅黑">
+<div class="container-fluid">
+<div style="background:#3992D0" class="row">
+<div class="col-sm-12" style='padding-bottom:10px; color:white'><h3 class="text-center">用户管理</h3></div>
+</div>
+
+
+<div class="row">
+<div class="col-sm-8 col-sm-offset-2">
+
+<div class="panel panel-info">
+<div class="panel-heading">
+<h5>用户总数：<{$userTotal}></h5>
+</div>
+
+<table class="table table-bordered table-striped">
+<tr><td>用户ID</td><td>用户名</td><td>电话</td><td>地址</td></tr>
+<{foreach $users as $user}>
+<tr>
+<td><{$user->userid}></td>
+<td><{$user->username}></td>
+<td><{$user->telephone}></td>
+<td><{$user->address}></td>
+
+</tr>
+<{/foreach}>
+</table>
+
+
+<div class="panel-footer">
+
+<nav>
+  <ul class="pager">
+    <li><a href="<{$root}>admin/userManage?offset=<{$offset-1}>">上一页</a></li>
+    <li><a href="<{$root}>admin/userManage?offset=<{$offset+1}>">下一页</a></li>
+    <li><a id="skip" href="#">跳转到</a></li>
+    <li><input id='skipPage' type="text" size="2">页&nbsp共<{$offset+1}>/<{$pageTotal}>页</li>
+  </ul>
+</nav>
+
+
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+<{include file="common_after.html"}>
+<script src="../js/userSkip.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>搜索结果</title>
+<{include file="common_before.html"}>
+<link href="../css/search.css" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid">
+
+<{include file="header.html"}>
+
+
+<div id="main" class="row">
+<div class="col-md-10 col-md-offset-1">
+
+<!-- body header -->
+<div id="class" class="row">
+<table class="table table-bordered">
+<tr>
+<td class="col-md-2" style="background:#ccc">种类
+</td>
+<td class="col-md-10">
+<{foreach $classes as $class}>
+<a class="class-a" href="<{$root}>home/search?searchClass=<{$class->itemclass}>&searchBrand=<{$searchBrand}>"><{$class->itemclass}></a>
+<{/foreach}>
+</td>
+</tr>
+
+<tr>
+<td class="col-md-2" style="background:#ccc">品牌
+</td>
+<td class="col-md-10">
+<{foreach $brands as $brand}>
+<a class="class-a"  href="<{$root}>home/search?searchClass=<{$searchClass}>&searchBrand=<{$brand->brand}>"><{$brand->brand}></a>
+<{/foreach}>
+</td>
+</tr>
+</table>
+
+<div class="clearfix" id="searchResult">
+<div style="float:left">当前搜索：</div>
+<{if $searchString != ""}>
+<div style="float:left"><{$searchString}></div>
+<{/if}>
+<{if $searchClass != ""}>
+<a  class="select" href="<{$root}>home/search?searchClass&searchBrand=<{$searchBrand}>"><div><{$searchClass}><span class="glyphicon glyphicon-remove"></span></div></a>
+<{/if}>
+<{if $searchBrand != ""}>
+<a  class="select" href="<{$root}>home/search?searchBrand&searchClass=<{$searchClass}>"><div><{$searchBrand}><span class="glyphicon glyphicon-remove"></span></div></a>
+<{/if}>
+
+</div>
+
+</div>
+<!-- end body header -->
+
+
+
+
+<div class="row">
+<div class="col-md-12">
+<{foreach $items as $item}>
+<a href="<{$root}>home/itemDetail?itemid=<{$item->itemid}>" target="_blank">
+<div class="gitem">
+<div class="brand"><{$item->brand}></div>
+<div class="item-img">
+<img class="img-responsive" src="<{$item->itemimg}>">
+</div>
+<div class="item-name">
+<b><{$item->itemname}></b>
+</div>
+<div class="item-information">
+<{$item->information}>
+</div>
+
+<div class="item-price">
+<{$item->itemprice}>
+</div>
+</div>
+</a>
+<{/foreach}>
+</div>
+</div>
+
+
+</div>
+</div>
+<{include file="footer.html"}>
+</div>
+
+<{include file="common_after.html"}>
+</body>
+</html>

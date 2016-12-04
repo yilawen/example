@@ -1,0 +1,8 @@
+@CHARSET "UTF-8";
+#detail{color:red; cursor:pointer}
+#detail-panel{display:none; background:white; position:absolute;z-index:10;}
+#detail:hover #detail-panel{display:block}
+td  
+{  
+ white-space: nowrap;  
+}  
