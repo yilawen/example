@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>登录</title>
+  <{include file="common_css.html"}>
+  <style type="text/css">
+  BODY {
+    text-decoration:none;
+    font-family:Constantia, "Lucida Bright", "DejaVu Serif", Georgia, serif;
+    margin:0;
+    padding:0;
+    min-width:980px
+  }
+  .tip {
+    font-size:30px;
+    padding:0px
+  }
+  #header {
+  }
+  .logo-en img {
+    width:30%;
+    height:30%;
+  }
+  .spanb {
+    float:left;
+    height:50px;
+    width:1px;
+    border:1px solid red;
+    margin-top:10px
+  }
+  .forget {
+    font-size:12px;
+    line-height:100%;
+    margin-top:10px;
+  }
+  .forget a {
+    color:#ff0080
+  }
+  #main-content {
+    background:#db4424
+  }
+  .userForm {
+    padding:10px 20px;
+    background:white;
+    margin-top:30px;
+    margin-bottom:30px
+  }
+  .form-header {
+    font-size:20px;
+  }
+  .inputSpan {
+    margin-bottom:20px
+  }
+  .footer {
+    height: 100px;
+  }
+  .footer-main {
+    height:100%;
+    position:relative
+  }
+  .footer-content {
+    width: 100%;
+    position: absolute;
+    bottom:0;
+  }
+  .login-tip {
+    font-size:12px;
+    height:25px;
+    margin-bottom:10px;
+    line-height:25px;
+    margin-left:12px
+  }
+  </style>
+</head>
+<body>
+
+  <div id="main" class="container-fluid">
+    <div id="header" class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="row">
+          <div id="logo"  class="col-md-3"><a href="<{$root}>home/index"><img  class="img-responsive center-block" src="<{$root}>static/images/logo.png"></a>
+          </div>
+          <div class="spanb"></div>
+          <div class="col-md-3 ">
+            <div class="tip">
+              登录
+            </div>
+            <div class="logo-en">
+              <img  src="<{$root}>static/images/logo_text.png">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="main-content" class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="row">
+          <div class="col-md-4">
+          </div>
+          <div class="col-md-5 col-md-offset-3 userForm">
+            <!-- 表单头 -->
+            <div class="row form-header">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-12" >
+                    <p>会员登录</p>
+                  </div>
+                </div>
+                <div class="row" >
+
+                  <div id="login-tip" class="login-tip col-md-11 alert-info" role="alert">
+                    <div class="row">
+                      <div class="col-md-1"><span id="tip-img" class="glyphicon glyphicon-alert"></span></div>
+                      <div id="tip-text" class="col-md-10">不建议在公共场所记住账号，以防丢失</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <form class="form-horizontal">
+              <div class="input-group inputSpan">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+                <input id="username" type="text" class="form-control" placeholder="用户名" aria-describedby="basic-addon1" autocomplete="off">
+              </div>
+
+              <div class="input-group inputSpan">
+                <span class="input-group-addon" ><span class="glyphicon glyphicon-lock"></span></span>
+                <input id="password" type="password" class="form-control" placeholder="密码" aria-describedby="basic-addon1" autocomplete="off">
+              </div>
+
+              <div class="form-group">
+                <div class=" col-md-6">
+                  <div class="checkbox">
+                    <label>
+                      <input id="re" type="checkbox"> 记住我
+                    </label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <p class="text-right forget "><a href="">忘记密码？</a></p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-md-6">
+                  <input type="button" value="登录" id="login" class="btn btn-primary btn-block">
+                </div>
+
+                <div class="col-md-6 ">
+                  <a class="btn btn-danger btn-block" href="<{$root}>user/showRegister">注册</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row footer">
+      <div class="col-md-8 col-md-offset-2 footer-main">
+        <div class="footer-content">
+          <p class="text-center">Copyright©2004-2015  GF.com 版权所有</P>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+  <{include file="common_js.html"}>
+  <script>
+  $(function(){
+    var root = getRootPath();
+    var re = document.getElementById("re");
+    checkCookie();
+    $("#login").click(function() {
+      if($("#username").val() != "" && $("#password").val() != "") {
+        $.ajax( {
+          url : root + "/user/login",
+          data : {
+            username : $("#username").val(),
+            password : $("#password").val()
+          },
+          type : "post",
+          dataType : "html",
+          success : function(data) {
+            if(data) {
+              if(re.checked){
+                setCookie('username',$("#username").val(), 365);
+              } else {
+                delCookie("username");
+              }
+              window.location.href = root + "/home/index";
+            }else {
+              $("#login-tip").removeClass("alert-info").addClass("alert-danger");
+              $("#tip-text").text("用户名和密码不匹配！");
+              $("#password").val("");
+            }
+          },
+          error : function() {
+            alert("异常");
+          }
+        }
+        );} else {
+          $("#login-tip").removeClass("alert-info").addClass("alert-danger");
+          $("#tip-text").text("请输入用户名和密码！");
+        }
+      });
+      $(this).ajaxStart(function() {
+        $("#login").val("正在登录...");
+      });
+      $(this).ajaxStop(function() {
+        $("#login").val("登录");
+      });
+      $("#username").focus(function() {
+        $("#login-tip").removeClass("alert-danger").addClass("alert-info");
+        $("#tip-text").text("不建议在公共场所记住账号，以防丢失");
+      });
+      $("#password").focus(function() {
+        $("#login-tip").removeClass("alert-danger").addClass("alert-info");
+        $("#tip-text").text("不建议在公共场所记住账号，以防丢失");
+      });
+    })
+</script>
+</html>

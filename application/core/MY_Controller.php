@@ -1,7 +1,7 @@
 <?php
  if (!defined('BASEPATH')) exit('No direct access allowed.');
 class MY_Controller extends CI_Controller {
-    public $root;
+    protected $root;
 
     public function __construct() {
         parent::__construct();

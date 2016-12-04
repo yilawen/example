@@ -1,11 +1,17 @@
 <?php
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-$config['theme']        = 'default';
-$config['template_dir'] = APPPATH . 'views';
-$config['compile_dir']  = FCPATH . 'templates_c';
-$config['cache_dir']    = FCPATH . 'cache';
-$config['config_dir']   = FCPATH . 'configs';
-$config['caching']      = false;
-$config['lefttime']     = 60;
-$config['leftdelimiter'] = '<{';
-$config['rightdelimiter'] = '}>';
+  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+  $config['theme']        = 'default';
+  $config['template_dir'] = array(
+    'views' => APPPATH . 'views',
+    'home' => APPPATH . 'views/home',
+    'user' => APPPATH . 'views/user',
+    'admin' => APPPATH . 'views/admin',
+    'common' => APPPATH . 'views/common'
+    );
+  $config['compile_dir']  = FCPATH . 'templates_c';
+  $config['cache_dir']    = FCPATH . 'cache';
+  $config['config_dir']   = FCPATH . 'configs';
+  $config['caching']      = false;
+  $config['lefttime']     = 60;
+  $config['leftdelimiter'] = '<{';
+  $config['rightdelimiter'] = '}>';

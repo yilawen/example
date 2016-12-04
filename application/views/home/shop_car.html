@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>购物车</title>
+  <{include file="common_css.html"}>
+</head>
+<body>
+  <div class="container-fluid">
+    <{include file="header.html"}>
+    <div class="row" style="min-height:300px">
+      <div class="col-md-8 col-md-offset-2">
+        <table class="table table-striped" style="border:solid 1px #ccc">
+          <tr class="info">
+            <td>
+              <div class="col-md-5">
+                <input id="selectAll" type="checkbox" value="false"> 全选
+              </div>
+              <div class="col-md-5 col-md-offset-1">
+                商品信息
+              </div>
+            </td>
+            <td>单价</td>
+            <td>数量</td>
+            <td>小计</td>
+            <td>操作</td>
+          </tr>
+          <{foreach $items as $item}>
+          <tr id="item<{$item->itemid}>" class="tr" data-id="<{$item->itemid}>">
+            <td class="col-md-3">
+              <div class="col-md-1">
+                <input id="<{$item->itemid}>" class="checkbox" type="checkbox">
+              </div>
+              <div class="col-md-5">
+                <a href="<{$root}>home/itemDetail?itemid=<{$item->itemid}>" target="_blank">
+                  <img  class="img-responsive" src="<{$item->itemimg}>">
+                </a>
+              </div>
+              <div class="col-md-5">
+                <{$item->itemname}>
+              </div>
+            </td>
+            <td id="itemp<{$item->itemid}>" class="col-md-1"><{$item->itemprice}></td>
+            <td class="col-md-1">
+              <div class="col-md-12" style="margin-left:-15px">
+                <div class="input-group">
+                  <input  id="itemq<{$item->itemid}>" type="text" class="form-control" value="<{$item->quantity}>" >
+                  <span class="input-group-btn">
+                    <div  class="btn-group-vertical btn-group btn-group-xs" role="group">
+                     <button class="btn btn-default add" type="button"  style="height:17px; font-size:8px">+</button>
+                     <button class="btn btn-default cut" type="button" style="height:18px; font-size:8px">-</button>
+                   </div>
+                 </span>
+               </div>
+             </div>
+           </td>
+           <td id="itemall<{$item->itemid}>" class="col-md-1"><{$item->itemprice*$item->quantity}></td>
+           <td class="col-md-1"><button  class="btn btn-danger btn-sm delete">删除</button></td>
+         </tr>
+         <{/foreach}>
+       </table>
+       <div class="row" style="background:#D9EDF7; height:50px; padding:10px">
+        <div class="col-md-3 col-md-offset-7" >
+          合计：<span id="totalPrice">0</span></div>
+          <div class="col-md-2">
+            <button id="settle" class="btn btn-primary btn-block">结算</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  <{include file="footer.html"}>
+  </div>
+  <{include file="common_js.html"}>
+  <script>
+  var root = getRootPath();
+
+  function calculate()
+  {
+    var checklist = $(".checkbox");
+    $total = 0;
+    for(var i = 0; i < checklist.length; i++)
+    {
+      if(checklist[i].checked) {
+        $itemid = checklist[i].id;
+        $total += parseFloat($("#itemall"+$itemid).text());
+      }
+    }
+    $("#totalPrice").text($total);
+  }
+
+  function modifyQuantity(context, count) {
+   var itemId = context.parents("tr").data("id");
+   var old = parseInt($("#itemq"+ itemId).val());
+   $("#itemq" + itemId).val(old + parseInt(count));
+   var quantity = parseInt($("#itemq" + itemId).val());
+   $.ajax({
+    url : root + "/home/alterShopCar",
+    data : {
+      itemid : itemId,
+      quantity : quantity
+    },
+    type : "post",
+    dataType : "html",
+    success : function(data){
+      $unitPrice = parseInt($("#itemp" + itemId).html());
+      $total = $unitPrice * quantity;
+      $("#itemall" + itemId).html($total);
+      calculate();
+    },
+    error : function(){
+      alert("异常");
+    }
+  });
+ }
+
+  $(function(){
+    $.each($(".checkbox"),function(){
+      $(this).click(function(){
+        calculate();
+      });
+    });
+
+    calculate();
+
+    $("#selectAll").click(function(){
+      if($("#selectAll").attr("value") == "false")
+      {
+        for(var i=0;i<checklist.length;i++)
+        {
+          checklist[i].checked = true;
+        }
+        $("#selectAll").attr("value","true");
+      }else{
+        for(var j=0;j<checklist.length;j++)
+        {
+          checklist[j].checked = false;
+        }
+        $("#selectAll").attr("value","false") ;
+      };
+      calculate();
+    });
+
+    $(".add").click(function() {
+      modifyQuantity($(this), 1);
+    });
+    $(".cut").click(function() {
+      modifyQuantity($(this), -1);
+    });
+
+    $("input:text").change(function(){
+      $itemId = $(this).parents("tr").data("id");
+      $quantity = parseInt($("#itemq"+$itemId).val());
+      $.ajax({
+        url : root + "/home/alterShopCar",
+        data : {
+          itemid : $itemId,
+          quantity : $quantity
+        },
+        type : "post",
+        dataType : "html",
+        success : function(data){
+          $unitPrice = parseInt($("#itemp"+$itemId).html());
+          $total = $unitPrice*$quantity;
+          $("#itemall"+$itemId).html($total);
+          calculate();
+        },
+        error : function(){
+
+        }
+      });
+    });
+
+    $(".delete").click(function(){
+      $itemId = $(this).parents("tr").data("id");
+      $select = confirm("确认要删除？");
+      if($select) {
+        $.ajax({
+          url : root + "/home/deleteItem",
+          data : {
+            itemid : $itemId,
+          },
+          type : "post",
+          dataType : "html",
+          success : function(data) {
+            $("#item" + $itemId).remove();
+            calculate();
+          }
+        })
+      }
+    });
+
+    $("#settle").click(function(){
+      $itemIds = new Array();
+      checklist = document.getElementsByName ("selected");
+      var j = 0;
+      for(var i=0;i<$checklist.length;i++)
+      {
+        if($checklist[i].checked) {
+          $itemIds[j] = checklist[i].id;
+          j++;
+        }
+      };
+
+      $.ajax({
+        url : root + "/home/preItems",
+        data : {
+          itemIds : $itemIds,
+          totalPrice :  $("#totalPrice").text()
+        },
+        type : "post",
+        dataType : "html",
+        success : function(data) {
+          window.location.href = root + "/home/preOrder";
+        }
+      });
+    });
+  })
+</script>
+</body>
+</html>

@@ -4,13 +4,12 @@ class User extends MY_controller{
   {
      parent::__construct();
      session_start();
-    $this->assign('root', 'http://'.$_SERVER ['HTTP_HOST'].'/shop/');
   }
   public function showLogin()
-  {   
+  {
     $this->display('login.html');
   }
-  
+
   public function login()
   {
     $username = $_POST['username'];
@@ -20,18 +19,18 @@ class User extends MY_controller{
     if($result) {
       global $user;
       $user = $result;
-      $_SESSION['user'] = $user;     
+      $_SESSION['user'] = $user;
       echo true;
     } else {
       echo false;
     }
   }
-  
+
   public function showRegister()
   {
     $this->display('register.html');
   }
-  
+
   public function register()
   {
     $username = isset($_POST['username'])?$_POST['username']:null;
@@ -46,7 +45,7 @@ class User extends MY_controller{
       echo false;
     }
   }
-  
+
   public function isLogin()
   {
     if(isset($_SESSION['user'])) {
@@ -55,20 +54,20 @@ class User extends MY_controller{
       echo false;
     }
   }
-  
+
   public function userDetail()
   {
     if(isset($_SESSION['user'])) {
       $this->load->model('user_model');
       $user = $this->user_model->getUserById($_SESSION['user']->userid);
       $this->assign('user', $user);
-      $this->display('userDetail.html');
+      $this->display('user_detail.html');
     } else {
       $this->load->helper('url');
       redirect(base_url('user/showLogin'));
     }
   }
-  
+
   public function updatePwd()
   {
     $username = $_SESSION['user']->username;
@@ -82,9 +81,8 @@ class User extends MY_controller{
     } else {
       echo false;
     }
-    
   }
-  
+
   public function updateInf()
   {
     $address = $_POST['address'];
@@ -96,11 +94,10 @@ class User extends MY_controller{
     $this->load->model('user_model');
     $this->user_model->updateInf($_SESSION['user']->userid, $data);
   }
-  
+
   public function logout()
   {
     session_destroy();
     $this->showLogin();
   }
-  
 }

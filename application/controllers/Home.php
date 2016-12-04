@@ -6,38 +6,39 @@ class Home extends MY_Controller
   {
     parent::__construct();
     session_start();
+    $this->load->helper('url');
+    $this->load->model('home_model');
   }
 
   public function index()
   {
-    $this->load->model('home_model');
     $bargains = $this->home_model->getItemsByFlag('bargains');
     $recommend = $this->home_model->getItemsByFlag('recommend');
     $hots = $this->home_model->getItemsByFlag('hot');
-    $this->assign('hots', $hots);
-    $this->assign('recommends', $recommend);
-    $this->assign('bargains',$bargains );
+    $data = array(
+      'hots' => $hots,
+      'recommends' => $recommend,
+      'bargains' => $bargains
+      );
+    $this->assign('data', $data);
     $this->display('homepage.html');
   }
 
   public function itemDetail()
   {
-    $this->load->model('home_model');
     $itemId = $_GET['itemid'];
     $item = $this->home_model->getItemById($itemId);
     $this->assign('item', $item);
-    $this->display('itemDetail.html');
+    $this->display('item_detail.html');
   }
 
   public function shopCar()
   {
     if(isset($_SESSION['user'])) {
-      $this->load->model('home_model');
       $items = $this->home_model->getItemFromCarByUserId($_SESSION['user']->userid);
       $this->assign('items', $items);
-      $this->display('shopCar.html');
+      $this->display('shop_car.html');
     } else {
-      $this->load->helper('url');
       redirect(base_url('user/showLogin'));
     }
   }
@@ -48,7 +49,6 @@ class Home extends MY_Controller
       $userid = $_SESSION['user']->userid;
       $itemid = $_POST['itemid'];
       $quantity = $_POST['quantity'];
-      $this->load->model('home_model');
       $this->home_model->addToCar($userid, $itemid, $quantity);
       echo true;
     } else {
@@ -62,10 +62,8 @@ class Home extends MY_Controller
       $userid = $_SESSION['user']->userid;
       $itemid = $_POST['itemid'];
       $quantity = $_POST['quantity'];
-      $this->load->model('home_model');
       $this->home_model->alterShopCar($userid, $itemid, $quantity);
       } else {
-        $this->load->helper('url');
         redirect(base_url('user/showLogin'));
       }
   }
@@ -75,10 +73,8 @@ class Home extends MY_Controller
     if(isset($_SESSION['user'])) {
       $userid = $_SESSION['user']->userid;
       $itemid = $_POST['itemid'];
-      $this->load->model('home_model');
       $this->home_model->deleteItem($userid, $itemid);
     } else {
-      $this->load->helper('url');
       redirect(base_url('user/showLogin'));
     }
   }
@@ -99,7 +95,6 @@ class Home extends MY_Controller
     $preAddr = $_SESSION['user']->address;
     $prePhone = $_SESSION['user']->telephone;
     $preName = $_SESSION['user']->username;
-    $this->load->model('home_model');
     $items = $this->home_model->getItemFromCarByItemIds($userid, $itemIds);
     $this->assign('totalPrice', $totalPrice);
     $this->assign('items', $items);
@@ -113,12 +108,10 @@ class Home extends MY_Controller
   {
     if(isset($_SESSION['user'])) {
       $userid = $_SESSION['user']->userid;
-      $this->load->model('home_model');
       $orders = $this->home_model->getOrder($userid);
       $this->assign('orders', $orders);
       $this->display('order.html');
     } else {
-      $this->load->helper('url');
       redirect(base_url('user/showLogin'));
     }
   }
@@ -132,13 +125,10 @@ class Home extends MY_Controller
       $recipient = $_GET['recipient'];
       $orderPhone = $_GET['orderPhone'];
       $orderAddr = $_GET['orderAddr'];
-      $this->load->model('home_model');
       $this->home_model->addOrder($userid, $totalPrice, $itemids, $recipient, $orderPhone, $orderAddr);
       $this->home_model->deleteItems($userid, $itemids);
-      $this->load->helper('url');
       redirect(base_url('home/showOrder'));
     } else {
-      $this->load->helper('url');
       redirect(base_url('user/showLogin'));
     }
   }
@@ -147,7 +137,6 @@ class Home extends MY_Controller
   {
     $searchBrand = $_GET['searchBrand'];
     $searchClass = $_GET['searchClass'];
-    $this->load->model('home_model');
     if($searchBrand == ""){
       $items = $this->home_model->searchByClass($searchClass);
     } else if($searchClass == "") {
@@ -171,7 +160,6 @@ class Home extends MY_Controller
   public function searchByInput()
   {
     $search = $_POST['search'];
-    $this->load->model('home_model');
     $items = $this->home_model->searchByString($search);
     $classes = $this->home_model->getAllClass();
     $this->assign('searchString', $search);
@@ -182,9 +170,5 @@ class Home extends MY_Controller
     $this->assign('brands', $brands);
     $this->assign('items', $items);
     $this->display('search.html');
-  }
-
-  public function test() {
-    echo FCPATH;
   }
 }

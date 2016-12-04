@@ -1,20 +1,20 @@
 <?php
 class Home_Model extends CI_Model{
-  
+
  /**
    * 根据商品id获取商品
    * @param string $gid 商品id
    * @return object/bool 商品对象, 失败返回false
    */
-  public function getItemById($gid = null)
-  {
-    if(!isset($gid)) {
-      return false;
-    }
-    $item = $this->db->get_where('item',array('itemid'=>$gid))->row();
-    return $item;
+ public function getItemById($gid = null)
+ {
+  if(!isset($gid)) {
+    return false;
   }
-  
+  $item = $this->db->get_where('item',array('itemid'=>$gid))->row();
+  return $item;
+}
+
   /**
    * 根据标志获取商品组
    * @param string $flag 商品标志
@@ -28,7 +28,7 @@ class Home_Model extends CI_Model{
     $items = $this->db->select('*')->from('item')->where('flag',$flag)->join('iteminhome','item.itemid=iteminhome.itemid')->get()->result_array();
     return$items;
   }
-  
+
   /**
    * 加入购物车
    * @param int $userid 用户id
@@ -39,10 +39,10 @@ class Home_Model extends CI_Model{
   public function addToCar($userid, $itemid, $quantity)
   {
     $data = array(
-        'userid' => $userid,
-        'itemid' => $itemid,
-        'quantity' => $quantity
-    );
+      'userid' => $userid,
+      'itemid' => $itemid,
+      'quantity' => $quantity
+      );
     $result = $this->getItemFromCar($userid, $itemid);
     if($result) {
       $result = $this->db->select('quantity')->from('shopcar')->where(array('userid'=>$userid,'itemid'=>$itemid))->get()->row_array();
@@ -53,7 +53,7 @@ class Home_Model extends CI_Model{
       $this->db->insert('shopcar',$data);
     }
   }
-  
+
   /**
    * 根据用户id和商品id获取购物车商品
    * @param int $userid
@@ -66,7 +66,7 @@ class Home_Model extends CI_Model{
     $item = $this->db->select('*')->from('shopcar')->where($data)->join('item','shopcar.itemid=item.itemid')->get()->row();
     return $item;
   }
-  
+
   /**
    * 根据用户id获取购物车所有商品
    * @param int $userid 用户id
@@ -77,7 +77,7 @@ class Home_Model extends CI_Model{
     $items = $this->db->select('*')->from('shopcar')->where('userid',$userid)->join('item','shopcar.itemid=item.itemid')->get()->result();
     return $items;
   }
-  
+
   /**
    * 修改商品数量
    * @param int $itemid 商品id
@@ -87,13 +87,13 @@ class Home_Model extends CI_Model{
   public function alterShopCar($userid, $itemid, $quantity)
   {
     $data = array(
-        'userid' => $userid,
-        'itemid' => $itemid,
-        'quantity' => $quantity
-    );
+      'userid' => $userid,
+      'itemid' => $itemid,
+      'quantity' => $quantity
+      );
     $this->db->where(array('userid'=>$userid,'itemid'=>$itemid))->update('shopcar',$data);
   }
-  
+
   /**
    * 删除商品
    * @param int $userid 用户id
@@ -102,22 +102,22 @@ class Home_Model extends CI_Model{
   public function deleteItem($userid, $itemid)
   {
     $data = array(
-        'userid' => $userid,
-        'itemid' => $itemid
-    );
+      'userid' => $userid,
+      'itemid' => $itemid
+      );
     $this->db->delete('shopcar',$data);
   }
-  
+
   /**
    * 删除商品组
    */
   public function deleteItems($userid, $itemids)
   {
-    for($i=0; $i<count($itemids); $i++) {     
+    for($i=0; $i<count($itemids); $i++) {
       $this->deleteItem($userid, $itemids[$i]);
     }
   }
-  
+
   /**
    * 通过商品ID数组获取商品对象数组
    * @param int $userId 用户id
@@ -125,14 +125,13 @@ class Home_Model extends CI_Model{
    */
   public function getItemFromCarByItemIds($userid, $itemids)
   {
-    for($i=0; $i<count($itemids);$i++)
-    {
+    for($i=0; $i<count($itemids);$i++) {
       $item = $this->getItemFromCar($userid, $itemids[$i]);
       $items[$i] = $item;
     }
     return $items;
   }
-  
+
   /**
    * 生成订单
    * @param int $userid 用户id
@@ -142,22 +141,22 @@ class Home_Model extends CI_Model{
   public function addOrder($userid, $totalPrice, $itemids, $recipient, $orderPhone, $orderAddr)
   {
     $data = array(
-        'userid' => $userid,
-        'totalPrice' => $totalPrice,
-        'orderAddr' => $orderAddr,
-        'orderPhone' => $orderPhone,
-        'recipient' => $recipient
-    );
-   $this->db->insert('order', $data);
-   $orderid =  $this->db->insert_id();  
-   $this->db->query('update `order` set addtime=now() where orderid='.$orderid);
-   for($i=0;$i<count($itemids);$i++) {
+      'userid' => $userid,
+      'totalPrice' => $totalPrice,
+      'orderAddr' => $orderAddr,
+      'orderPhone' => $orderPhone,
+      'recipient' => $recipient
+      );
+    $this->db->insert('order', $data);
+    $orderid =  $this->db->insert_id();
+    $this->db->query('update `order` set addtime=now() where orderid='.$orderid);
+    for($i=0;$i<count($itemids);$i++) {
      $quantity = $this->db->select('quantity')->from('shopcar')->where(array('userid'=>$userid,'itemid'=>$itemids[$i]))->get()->row_array();
      $quantity = $quantity['quantity'];
      $this->db->insert('orderdetail',array('orderid'=>$orderid,'itemid'=>$itemids[$i],'quantity'=>$quantity));
    }
-  }
-  
+ }
+
   /**
    * 获取用户所有订单
    * @param int $userid 用户id
@@ -177,7 +176,7 @@ class Home_Model extends CI_Model{
     }
     return $orders;
   }
-  
+
   /**
    * 通过商品类别搜索
    * @param string $search 搜索字符串
@@ -187,7 +186,7 @@ class Home_Model extends CI_Model{
     $items = $this->db->select('*')->from('item')->where('itemclass', $search)->get()->result();
     return $items;
   }
-  
+
   /**
    * 通过品牌搜索
    * @param string $search
@@ -197,21 +196,21 @@ class Home_Model extends CI_Model{
     $items = $this->db->select('*')->from('item')->where('brand', $search)->get()->result();
     return $items;
   }
-  
+
   /**
    * 通过类别和品牌搜索
    */
   public function searchByClassAndBrand($class, $brand)
   {
     $data = array(
-        'itemclass' => $class,
-        'brand' => $brand
-    );
+      'itemclass' => $class,
+      'brand' => $brand
+      );
     $items = $this->db->select('*')->from('item')->where($data)->get()->result();
     return $items;
   }
-  
-  
+
+
   /**
    * 模糊搜索
    */
@@ -220,7 +219,7 @@ class Home_Model extends CI_Model{
     $items = $this->db->select('*')->from('item')->like('itemclass', $search)->or_like('brand', $search)->get()->result();
     return $items;
   }
-  
+
   /**
    * 获取所有类别
    */
@@ -229,7 +228,7 @@ class Home_Model extends CI_Model{
     $classes = $this->db->distinct()->select('itemclass')->from('item')->get()->result();
     return $classes;
   }
-  
+
   /**
    * 获取所有品牌
    */
@@ -238,9 +237,9 @@ class Home_Model extends CI_Model{
     $brands = $this->db->distinct()->select('brand')->from('item')->get()->result();
     return $brands;
   }
-  
+
   public function test()
-  {    
+  {
     $this->db->query('insert into `test`(addtime) values(`now()`)');
   }
 }
