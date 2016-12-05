@@ -10,6 +10,7 @@
     <{include file="header.html"}>
     <div class="row" style="min-height:300px">
       <div class="col-md-8 col-md-offset-2">
+      <form action="<{$root}>home/preOrder" method="post">
         <table class="table table-striped" style="border:solid 1px #ccc">
           <tr class="info">
             <td>
@@ -29,7 +30,7 @@
           <tr id="item<{$item->itemid}>" class="tr" data-id="<{$item->itemid}>">
             <td class="col-md-3">
               <div class="col-md-1">
-                <input id="<{$item->itemid}>" class="checkbox" type="checkbox">
+                <input id="<{$item->itemid}>" class="checkbox" name="itemId" value="<{$item->itemid}>" type="checkbox">
               </div>
               <div class="col-md-5">
                 <a href="<{$root}>home/itemDetail?itemid=<{$item->itemid}>" target="_blank">
@@ -63,9 +64,10 @@
         <div class="col-md-3 col-md-offset-7" >
           合计：<span id="totalPrice">0</span></div>
           <div class="col-md-2">
-            <button id="settle" class="btn btn-primary btn-block">结算</button>
+            <input id="settle" type="submit" value="结算" class="btn btn-primary btn-block">
           </div>
         </div>
+        </form>
       </div>
     </div>
   <{include file="footer.html"}>
@@ -123,6 +125,7 @@
     calculate();
 
     $("#selectAll").click(function(){
+      var checklist = $(".checkbox");
       if($("#selectAll").attr("value") == "false")
       {
         for(var i=0;i<checklist.length;i++)
@@ -189,31 +192,29 @@
       }
     });
 
-    $("#settle").click(function(){
-      $itemIds = new Array();
-      checklist = document.getElementsByName ("selected");
-      var j = 0;
-      for(var i=0;i<$checklist.length;i++)
-      {
-        if($checklist[i].checked) {
-          $itemIds[j] = checklist[i].id;
-          j++;
-        }
-      };
-
-      $.ajax({
-        url : root + "/home/preItems",
-        data : {
-          itemIds : $itemIds,
-          totalPrice :  $("#totalPrice").text()
-        },
-        type : "post",
-        dataType : "html",
-        success : function(data) {
-          window.location.href = root + "/home/preOrder";
-        }
-      });
-    });
+    // $("#settle").click(function(){
+    //   $itemIds = new Array();
+    //   var checklist = $(".checkbox");
+    //   var j = 0;
+    //   for(var i = 0; i < checklist.length; i++)
+    //   {
+    //     if(checklist[i].checked) {
+    //       $itemIds.push(checklist[i].id);
+    //     }
+    //   };
+    //   $.ajax({
+    //     url : root + "/home/preItems",
+    //     data : {
+    //       itemIds : $itemIds,
+    //       totalPrice :  $("#totalPrice").text()
+    //     },
+    //     type : "post",
+    //     dataType : "html",
+    //     success : function(data) {
+    //       window.location.href = root + "/home/preOrder";
+    //     }
+    //   });
+    // });
   })
 </script>
 </body>

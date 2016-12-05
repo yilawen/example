@@ -67,7 +67,7 @@ class Admin extends MY_Controller{
     $this->display('user_manage.html');
   }
 
-  public function itemAdmin()
+  public function itemManage()
   {
     $this->loginDetect();
     if(!isset($_GET['offset'])) {
@@ -79,26 +79,15 @@ class Admin extends MY_Controller{
     $itemTotal = $this->admin_model->getItemQuantity();
     $classTotal = $this->admin_model->getClass();
     $items = $this->admin_model->getItem('10', $offset);
-    $this->assign('pageTotal', ceil($itemTotal/10));
-    $this->assign('offset', $offset);
-    $this->assign('items', $items);
-    $this->assign('classTotal', $classTotal);
-    $this->assign('itemTotal', $itemTotal);
-    $this->display('item_manage.html');
-  }
-
-  public function addItem()
-  {
     $data = array(
-        'itemname' => $_POST['itemname'],
-        'itemclass' => $_POST['itemclass'],
-        'itemimg' => $_POST['itemimg'],
-        'information' => $_POST['information'],
-        'brand' => $_POST['brand'],
-        'inventory' => $_POST['inventory'],
-        'itemprice' => $_POST['itemprice']
-    );
-    $this->admin_model->addItem($data);
+      'pageTotal' => ceil($itemTotal/10),
+      'offset' => $offset,
+      'items' => $items,
+      'classTotal' => $classTotal,
+      'itemTotal' => $itemTotal
+      );
+    $this->assign('data', $data);
+    $this->display('item_manage.html');
   }
 
   public function updateItem()
@@ -116,46 +105,9 @@ class Admin extends MY_Controller{
     $this->admin_model->updateItem($itemid, $data);
   }
 
-  public function showHomeManage()
-  {
-    if(isset($_SESSION['admin'])) {
-    $this->load->model('home_model');
-    $bargains = $this->home_model->getItemsByFlag('bargains');
-    $recommend = $this->home_model->getItemsByFlag('recommend');
-    $hots = $this->home_model->getItemsByFlag('hot');
-    $this->assign('hots', $hots);
-    $this->assign('recommends', $recommend);
-    $this->assign('bargains',$bargains );
-    $this->display('homeManage.html');
-    } else {
-      redirect(base_url('admin/index'));
-    }
-  }
-
-  public function deleteFromHome()
-  {
-    $itemid = $_GET['itemid'];
-    $this->admin_model->deleteItem($itemid);
-    redirect(base_url('admin/showHomeManage'));
-  }
-
-  public function addItemToHome()
-  {
-    $itemid = $_POST['itemid'];
-    $flag = $_POST['flag'];
-    $this->load->model('home_model');
-    $result = $this->home_model->getItemById($itemid);
-    if($result){
-      $this->admin_model->addItemToHome($itemid, $flag);
-      echo true;
-    } else {
-      echo false;
-    }
-  }
-
   public function orderManage()
   {
-    if(isset($_SESSION['admin'])) {
+      $this->loginDetect();
       if(!isset($_GET['offset'])) {
         $offset = 0;
       } else {
@@ -164,16 +116,16 @@ class Admin extends MY_Controller{
       }
       $limit = 10;
       $orders = $this->admin_model->getOrder($limit, $offset);
-      $this->assign('orders', $orders);
-      $this->assign('offset', $offset);
       $quantity = $this->admin_model->getOrderQuantity();
-      $this->assign('orderTotal', $quantity);
-      $this->assign('pageTotal', ceil($quantity/10));
-      $this->display('orderManage.html');
-    } else {
-        redirect(base_url('admin/index'));
-      }
-   }
+      $data = array(
+        'orders' => $orders,
+        'offset' => $offset,
+        'orderTotal' => $quantity,
+        'pageTotal' => ceil($quantity/10)
+        );
+      $this->assign('data', $data);
+      $this->display('order_manage.html');
+  }
 
    public function getOrderDetail()
    {
@@ -181,5 +133,4 @@ class Admin extends MY_Controller{
      $result = $this->admin_model->getOrderDetail($orderid);
      echo json_encode($result);
    }
-
 }

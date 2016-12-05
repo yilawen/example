@@ -125,12 +125,8 @@
           },
           type : "post",
           dataType : "html",
-          success : function(data){
-            if(!data){
-              window.location.href = root + "/user/showLogin";
-            } else {
-              $(".modal-body").html("成功加入购物车！");
-            }
+          success : function(){
+            $(".modal-body").html("成功加入购物车！");
           },
           error : function(){
             alert("异常");

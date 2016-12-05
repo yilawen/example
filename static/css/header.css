@@ -1,28 +1,141 @@
-@CHARSET "UTF-8";
-body{font-family:"微软雅黑" !important}
-#nav{background:#F2F2F2; height:25px; font-size:8px;
-        font-family:Constantia, "Lucida Bright", "DejaVu Serif", Georgia, serif; line-height:25px;
+body {
+  font-family: "微软雅黑" !important
 }
-#nav a{color:#666666}
-#nav a:hover{color:red}
-.search{margin-top:25px; margin-left:-25px}
-#search{border:3px solid #C40000}
-#search-submit{background:#C40000; border:1px solid #C40000; color:white; margin-top:-1px; border-bottom:2px solid #C40000;}
 
-#kind{height:30px;width:75px; margin-top:25px; border:1px solid #ccc; text-align:left; line-height:30px; border-radius:5px; cursor:pointer; margin-right:4%}
-#kind:hover{background:#ccc}
-.kind-span{transition:transform 1s;height:10px; width:12px; }
-#kind:hover .kind-span{transform:rotate(180deg)}
-.kind-list{width:150px; position:relative; border:1px #ccc solid; left:-15px; display:none; z-index:10; background:white; text-align:left; padding:10px}
-.kind-list a{margin-right:8px; color:#6d7374; display:inline-block}
-.kind-list a:hover{text-decoration:none; color:red}
-#kind:hover .kind-list{display:block}
+#nav {
+  background: #F2F2F2;
+  height: 25px;
+  font-size: 1em;
+  font-family: Constantia, "Lucida Bright", "DejaVu Serif", Georgia, serif;
+  line-height: 25px;
+}
 
-#brand{height:30px;width:75px; margin-top:25px; border:1px solid #ccc; text-align:left; line-height:30px; border-radius:5px; cursor:pointer;}
-#brand:hover{background:#ccc}
-#brand:hover #brand-span{transform:rotate(180deg)}
-#brand-span{transition:transform 1s;height:10px; width:12px; }
-.brand-list{ width:150px; position:relative; border:1px #ccc solid; left:-15px; display:none; z-index:10; background:white; text-align:left; padding:10px}
-.brand-list a{margin-right:8px; color:#6d7374; display:inline-block}
-.brand-list a:hover{text-decoration:none; color:red}
-#brand:hover .brand-list{display:block}
+#nav a {
+  color: #666666
+}
+
+#nav a:hover {
+  color: red
+}
+
+.search {
+  margin-top: 25px;
+  margin-left: -25px
+}
+
+#search {
+  border: 3px solid #C40000
+}
+
+#search-submit {
+  background: #C40000;
+  border: 1px solid #C40000;
+  color: white;
+  margin-top: -1px;
+  border-bottom: 2px solid #C40000;
+}
+
+#kind {
+  height: 30px;
+  width: 75px;
+  margin-top: 25px;
+  border: 1px solid #ccc;
+  text-align: left;
+  line-height: 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 4%
+}
+
+#kind:hover {
+  background: #ccc
+}
+
+.kind-span {
+  transition: transform 1s;
+  height: 10px;
+  width: 12px;
+}
+
+#kind:hover .kind-span {
+  transform: rotate(180deg)
+}
+
+.kind-list {
+  width: 150px;
+  position: relative;
+  border: 1px #ccc solid;
+  left: -15px;
+  display: none;
+  z-index: 10;
+  background: white;
+  text-align: left;
+  padding: 10px
+}
+
+.kind-list a {
+  margin-right: 8px;
+  color: #6d7374;
+  display: inline-block
+}
+
+.kind-list a:hover {
+  text-decoration: none;
+  color: red
+}
+
+#kind:hover .kind-list {
+  display: block
+}
+
+#brand {
+  height: 30px;
+  width: 75px;
+  margin-top: 25px;
+  border: 1px solid #ccc;
+  text-align: left;
+  line-height: 30px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#brand:hover {
+  background: #ccc
+}
+
+#brand:hover #brand-span {
+  transform: rotate(180deg)
+}
+
+#brand-span {
+  transition: transform 1s;
+  height: 10px;
+  width: 12px;
+}
+
+.brand-list {
+  width: 150px;
+  position: relative;
+  border: 1px #ccc solid;
+  left: -15px;
+  display: none;
+  z-index: 10;
+  background: white;
+  text-align: left;
+  padding: 10px
+}
+
+.brand-list a {
+  margin-right: 8px;
+  color: #6d7374;
+  display: inline-block
+}
+
+.brand-list a:hover {
+  text-decoration: none;
+  color: red
+}
+
+#brand:hover .brand-list {
+  display: block
+}

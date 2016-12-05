@@ -1,8 +1,8 @@
 <?php
 class Admin_Model extends CI_Model{
-  
+
  /**
-   * 验证管理员  
+   * 验证管理员
    */
   public function authenticate ($adminname, $password)
   {
@@ -10,12 +10,12 @@ class Admin_Model extends CI_Model{
     if($result){
        $aid = $result['adminid'];
        return  $this->getAdminById($aid);
-    }    
+    }
     else {
       return false;
     }
   }
-  
+
   /**
    * 根据用户id获取管理员
    */
@@ -27,7 +27,7 @@ class Admin_Model extends CI_Model{
     $admin = $this->db->get_where('admin',array('adminid'=>$aid))->row();
     return $admin;
   }
-  
+
   /**
    * 根据用户名获取管理员
    */
@@ -39,7 +39,7 @@ class Admin_Model extends CI_Model{
     $admin = $this->db->get_where('admin',array('adminname'=>$adminname))->row();
     return $admin;
   }
-  
+
   /**
    * 新增一个管理员
    * @param array $user 用户数组
@@ -48,7 +48,7 @@ class Admin_Model extends CI_Model{
   public function insertAdmin($adminname, $password)
   {
    $data = array('adminname' => $adminname,
-                        'adminpwd' => $password,                       
+                        'adminpwd' => $password,
                         );
    $admin = $this->getAdminByAdminName($adminname);
    if($user) {
@@ -57,11 +57,7 @@ class Admin_Model extends CI_Model{
    $result = $this->db->insert('admin',$data);
     return $result;
   }
-  
-  
-  
-  
-  
+
   /**
    * 获取指定数量用户
    */
@@ -70,7 +66,7 @@ class Admin_Model extends CI_Model{
     $result = $this->db->select('*')->from('user')->limit($limit, $offset*$limit)->get()->result();
     return $result;
   }
-  
+
   /**
    * 统计用户总数
    */
@@ -79,7 +75,7 @@ class Admin_Model extends CI_Model{
     $result = $this->db->count_all('user');
     return $result;
   }
-  
+
   /**
    * 获取指定数量商品
    */
@@ -88,7 +84,7 @@ class Admin_Model extends CI_Model{
     $result = $this->db->select('*')->from('item')->limit($limit, $offset*$limit)->get()->result();
     return $result;
   }
-  
+
   /**
    * 统计商品总数
    */
@@ -97,52 +93,29 @@ class Admin_Model extends CI_Model{
     $result = $this->db->count_all('item');
     return $result;
   }
-  
+
   /**
    * 获取类别总数
-   * 
+   *
    */
   public function getClass()
   {
     $result = $this->db->distinct()->select('itemclass')->from('item')->count_all_results();
     return $result;
   }
+
   /**
-   * 添加商品到数据库
+   * 更新商品信息,如果id为空，则添加商品
    */
-  public function addItem($data)
+  public function updateItem($itemId, $data)
   {
-    $this->db->insert('item', $data);
+    if(!$itemId) {
+      $this->db->insert('item', $data);
+    } else {
+      $this->db->where("itemid", $itemId)->update('item', $data);
+    }
   }
-  
-  /**
-   * 更新商品信息
-   */
-  public function updateItem($itemid, $data)
-  {
-    $this->db->where("itemid", $itemid)->update('item', $data);
-  }
-  
-  /**
-   * 删除主页商品
-   */
-  public function deleteItem($itemid)
-  {
-    $this->db->where('itemid', $itemid)->delete('iteminhome');
-  }
-  
-  /**
-   * 添加主页商品
-   */
-  public function addItemToHome($itemid, $flag)
-  {
-    $data = array(
-      'itemid' => $itemid,
-      'flag' => $flag
-    );
-    $this->db->insert('iteminhome', $data);
-  }
-  
+
   /**
    * 获取指定数量订单
    */
@@ -151,7 +124,7 @@ class Admin_Model extends CI_Model{
     $result = $this->db->select('*')->from('order')->limit($limit, $offset*$limit)->get()->result();
     return $result;
   }
-  
+
   /**
    * 统计订单总数
    */
@@ -171,5 +144,4 @@ class Admin_Model extends CI_Model{
     ->get()->result();
     return $result;
   }
-
 }

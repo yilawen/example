@@ -1,36 +1,221 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>后台管理</title>
-<{include file="common_css.html"}>
+  <meta charset="UTF-8">
+  <title>商品管理</title>
+  <link href="<{$root}>static/css/bootstrap.css" rel="stylesheet">
+  <style type="text/css">
+    input.error { border: 1px solid red; }
+    label.error { padding-left: 12px;padding-bottom: 2px; font-weight: bold;font-size:12px; color: red;}
+  </style>
 </head>
-<body>
-<div class="container-fluid">
-<div style="background:#3992D0" class="row">
-<div class="col-sm-12" style='padding-bottom:10px; color:white'><h3 class="text-center">商品统计</h3></div>
+<body style="font-family:微软雅黑">
+  <div class="container-fluid">
+    <div style="background:#3992D0" class="row">
+      <div class="col-sm-12" style='padding-bottom:10px; color:white'><h3 class="text-center">商品管理</h3></div>
+    </div>
+    <div class="row">
+      <div class="col-sm-8 col-sm-offset-2">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-sm-6">
+                商品检索&nbsp&nbsp&nbsp商品总数：<{$data.itemTotal}>&nbsp&nbsp&nbsp类别总数：<{$data.classTotal}>
+              </div>
+              <div class="col-sm-2 col-sm-offset-4">
+                <button id="addBtn" class="btn btn-primary" data-toggle="modal" data-target="#addItemModal">
+                  商品入库
+                </button>
+              </div>
+            </div>
+          </div>
+
+            <table class="table table-bordered table-striped">
+              <tr>
+                <td>商品ID</td>
+                <td>图片</td>
+                <td>商品名</td>
+                <td>类别</td>
+                <td>单价</td>
+                <td>描述信息</td>
+                <td>库存</td>
+                <td>品牌</td>
+                <td>操作</td>
+              </tr>
+              <{foreach $data.items as $item}>
+              <tr>
+                <td id="itemid<{$item->itemid}>"><{$item->itemid}></td>
+                <td style="width:50px" ><img id="itemimg<{$item->itemid}>" class="img-responsive" alt="<{$item->itemimg}>" src="<{$item->itemimg}>"></td>
+                <td id="itemname<{$item->itemid}>"><{$item->itemname}></td>
+                <td id="itemclass<{$item->itemid}>"><{$item->itemclass}></td>
+                <td id="itemprice<{$item->itemid}>"><{$item->itemprice}></td>
+                <td id="information<{$item->itemid}>"><{$item->information}></td>
+                <td id="inventory<{$item->itemid}>"><{$item->inventory}></td>
+                <td id="brand<{$item->itemid}>"><{$item->brand}></td>
+                <td>
+                  <button id="<{$item->itemid}>" class="btn btn-sm btn-info editItem" data-toggle="modal" data-target="#updateItemModal">
+                    编辑
+                  </button>
+                </td>
+              </tr>
+              <{/foreach}>
+            </table>
+
+            <div class="panel-footer">
+              <nav>
+                <ul class="pager">
+                  <li><a href="<{$root}>admin/itemManage?offset=<{$data.offset-1}>">上一页</a></li>
+                  <li><a href="<{$root}>admin/itemManage?offset=<{$data.offset+1}>">下一页</a></li>
+                  <li><a id="skip" href="#">跳转到</a></li>
+                  <li><input id="skipPage" type="text" size="2">页&nbsp共<{$data.offset+1}>/<{$data.pageTotal}>页</li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        <!-- addItem Modal -->
+        <div class="modal fade" id="addItemModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">商品管理</h4>
+              </div>
+              <div class="modal-body">
+                <form id="addItemForm" class="form-horizontal">
+                 <div class="form-group">
+                  <label for="itemname" class="col-sm-2 control-label">商品名:</label>
+                  <div class="col-sm-6">
+                    <input id="itemname"  name="itemname" type="text" class="form-control" placeholder="商品名">
+                  </div><div class="col-sm-4"></div>
+                </div>
+                <div class="form-group">
+                  <label for="itemclass" class="col-sm-2 control-label">类别:</label>
+                  <div class="col-sm-6">
+                    <input id="itemclass" name="itemclass" type="text" class="form-control" placeholder="类别">
+                  </div><div class="col-sm-4"></div>
+                </div>
+                <div class="form-group">
+                  <label for="itemprice" class="col-sm-2 control-label">单价:</label>
+                  <div class="col-sm-6">
+                    <input id="itemprice" name="itemprice" type="text" class="form-control" placeholder="单价">
+                  </div><div class="col-sm-4"></div>
+                </div>
+                <div class="form-group">
+                  <label for="information" class="col-sm-2 control-label">描述:</label>
+                  <div class="col-sm-6">
+                    <input id="information" name="information" type="text" class="form-control" placeholder="描述">
+                  </div><div class="col-sm-4"></div>
+                </div>
+                <div class="form-group">
+                  <label for="brand" class="col-sm-2 control-label">品牌:</label>
+                  <div class="col-sm-6">
+                    <input id="brand" name="brand" type="text" class="form-control" placeholder="品牌">
+                  </div><div class="col-sm-4"></div>
+                </div>
+                <div class="form-group">
+                  <label for="inventory" class="col-sm-2 control-label">库存:</label>
+                  <div class="col-sm-6">
+                    <input id="inventory" name="inventory" type="text" class="form-control" placeholder="库存">
+                  </div><div class="col-sm-4"></div>
+                </div>
+                <div class="form-group">
+                  <label for="itemimg" class="col-sm-2 control-label">图片链接:</label>
+                  <div class="col-sm-6">
+                    <input id="itemimg" name="itemimg" type="text" class="form-control" placeholder="图片地址">
+                  </div><div class="col-sm-4"></div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button  type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              <button id="addItemSubmit" type="button" class="btn btn-primary">确认</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- addItem Modal end -->
+
+  </div>
 </div>
-
-
-<div class="row">
-
-<div id="statistic" class="col-sm-8">
-</div>
-<div class="col-sm-4">
-
-
-</div>
-
-
-
-</div>
-
-</div>
-
-
-</body>
 <{include file="common_js.html"}>
-<script type="text/javascript" src="<{$root}>static/js/highcharts.js"></script>
-<script type="text/javascript" src="<{$root}>static/js/exporting.js"></script>
-<script src="../js/itemManage.js"></script>
+<script type="text/javascript" src="<{$root}>static/js/jquery.validate.js"></script>
+<script type="text/javascript" src="<{$root}>static/js/messages_zh.js"></script>
+<script>
+  $(function(){
+   $("#skip").click(function(){
+    $page = parseInt($("#skipPage").val())-1;
+    $str = getRootPath()+"/Admin/itemManage?offset="+$page;
+    $(this).attr("href", $str);
+  });
+
+   $("#addItemSubmit").click(function(){
+    $("#addItemForm").submit();
+  });
+
+   $("#addItemForm").validate({
+    rules:{
+      itemname : "required",
+      itemclass : "required",
+      itemprice : {required:true,number : true,},
+      inventory : {required:true,digits : true,},
+      brand : "required"
+    },
+    errorPlacement : function(error,element) {
+      error.appendTo(element.parent("div").next("div"));
+    },
+    submitHandler : function(form){
+      $.ajax({
+        url : getRootPath() + "/admin/updateItem",
+        type : "post",
+        data : {
+          itemid: $("#addItemSubmit").attr("value"),
+          itemname : $("#itemname").val(),
+          itemclass : $("#itemclass").val(),
+          itemprice : $("#itemprice").val(),
+          itemimg : $("#itemimg").val(),
+          brand : $("#brand").val(),
+          information : $("#information").val(),
+          inventory : $("#inventory").val()
+        },
+        dataType : "html",
+        success : function(data) {
+          $("#addItemModal").modal("hide");
+          window.location.reload();
+        },
+        error : function() {
+          alert("异常");
+        }
+      })
+    }
+  });
+
+   $("#addBtn").click(function() {
+     $("#addItemForm input").val("");
+     $("#addItemSubmit").attr("value", "");
+   })
+
+   $(".editItem").each(function(){
+    $(this).click(function(){
+      $id=$(this).attr("id");
+      $("#itemname").val($("#itemname"+$id).text());
+      $("#itemclass").val($("#itemclass"+$id).text());
+      $("#itemprice").val($("#itemprice"+$id).text());
+      $("#information").val($("#information"+$id).text());
+      $("#inventory").val($("#inventory"+$id).text());
+      $("#itemimg").val($("#itemimg"+$id).attr("alt"));
+      $("#brand").val($("#brand"+$id).text());
+      $("#addItemSubmit").attr("value", $id);
+
+      $("#addItemModal").modal("show");
+    })
+  });
+ })
+
+
+</script>
+</body>
 </html>

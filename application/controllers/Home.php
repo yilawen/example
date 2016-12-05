@@ -10,6 +10,13 @@ class Home extends MY_Controller
     $this->load->model('home_model');
   }
 
+  public function loginDetect()
+  {
+    if(!isset($_SESSION['user'])) {
+      redirect(base_url('user/showLogin'));
+    }
+  }
+
   public function index()
   {
     $bargains = $this->home_model->getItemsByFlag('bargains');
@@ -34,64 +41,42 @@ class Home extends MY_Controller
 
   public function shopCar()
   {
-    if(isset($_SESSION['user'])) {
-      $items = $this->home_model->getItemFromCarByUserId($_SESSION['user']->userid);
-      $this->assign('items', $items);
-      $this->display('shop_car.html');
-    } else {
-      redirect(base_url('user/showLogin'));
-    }
+    $this->loginDetect();
+    $items = $this->home_model->getItemFromCarByUserId($_SESSION['user']->userid);
+    $this->assign('items', $items);
+    $this->display('shop_car.html');
   }
 
   public function addToCar()
   {
-    if(isset($_SESSION['user'])) {
-      $userid = $_SESSION['user']->userid;
-      $itemid = $_POST['itemid'];
-      $quantity = $_POST['quantity'];
-      $this->home_model->addToCar($userid, $itemid, $quantity);
-      echo true;
-    } else {
-      echo false;
-    }
+    $this->loginDetect();
+    $userid = $_SESSION['user']->userid;
+    $itemid = $_POST['itemid'];
+    $quantity = $_POST['quantity'];
+    $this->home_model->addToCar($userid, $itemid, $quantity);
   }
 
   public function alterShopCar()
   {
-      if(isset($_SESSION['user'])) {
-      $userid = $_SESSION['user']->userid;
-      $itemid = $_POST['itemid'];
-      $quantity = $_POST['quantity'];
-      $this->home_model->alterShopCar($userid, $itemid, $quantity);
-      } else {
-        redirect(base_url('user/showLogin'));
-      }
+    $this->loginDetect();
+    $userid = $_SESSION['user']->userid;
+    $itemid = $_POST['itemid'];
+    $quantity = $_POST['quantity'];
+    $this->home_model->alterShopCar($userid, $itemid, $quantity);
   }
 
   public function deleteItem()
   {
-    if(isset($_SESSION['user'])) {
-      $userid = $_SESSION['user']->userid;
-      $itemid = $_POST['itemid'];
-      $this->home_model->deleteItem($userid, $itemid);
-    } else {
-      redirect(base_url('user/showLogin'));
-    }
-  }
-
-  public function preItems()
-  {
-    $itemIds = $_POST['itemIds'];
-    $totalPrice = $_POST['totalPrice'];
-    $_SESSION['preOrder'] = $itemIds;
-    $_SESSION['totalPrice'] = $totalPrice;
+    $this->loginDetect();
+    $userid = $_SESSION['user']->userid;
+    $itemid = $_POST['itemid'];
+    $this->home_model->deleteItem($userid, $itemid);
   }
 
   public function preOrder()
   {
-    $itemIds = $_SESSION['preOrder'];
-    $userid = $_SESSION['user']->userid;
-    $totalPrice = $_SESSION['totalPrice'];
+    $itemIds = $_POST['itemIds'];
+    $totalPrice = $_POST['totalPrice'];
     $preAddr = $_SESSION['user']->address;
     $prePhone = $_SESSION['user']->telephone;
     $preName = $_SESSION['user']->username;
@@ -101,36 +86,30 @@ class Home extends MY_Controller
     $this->assign('preName', $preName);
     $this->assign('preAddr', $preAddr);
     $this->assign('prePhone', $prePhone);
-    $this->display('preOrder.html');
+    $this->display('pre_order.html');
   }
 
   public function showOrder()
   {
-    if(isset($_SESSION['user'])) {
-      $userid = $_SESSION['user']->userid;
-      $orders = $this->home_model->getOrder($userid);
-      $this->assign('orders', $orders);
-      $this->display('order.html');
-    } else {
-      redirect(base_url('user/showLogin'));
-    }
+    $this->loginDetect();
+    $userid = $_SESSION['user']->userid;
+    $orders = $this->home_model->getOrder($userid);
+    $this->assign('orders', $orders);
+    $this->display('order.html');
   }
 
   public function submitOrder()
   {
-    if(isset($_SESSION['user'])) {
-      $userid = $_SESSION['user']->userid;
-      $totalPrice = $_GET['totalPrice'];
-      $itemids = $_SESSION['preOrder'];
-      $recipient = $_GET['recipient'];
-      $orderPhone = $_GET['orderPhone'];
-      $orderAddr = $_GET['orderAddr'];
-      $this->home_model->addOrder($userid, $totalPrice, $itemids, $recipient, $orderPhone, $orderAddr);
-      $this->home_model->deleteItems($userid, $itemids);
-      redirect(base_url('home/showOrder'));
-    } else {
-      redirect(base_url('user/showLogin'));
-    }
+    $this->loginDetect();
+    $userid = $_SESSION['user']->userid;
+    $totalPrice = $_GET['totalPrice'];
+    $itemids = $_SESSION['preOrder'];
+    $recipient = $_GET['recipient'];
+    $orderPhone = $_GET['orderPhone'];
+    $orderAddr = $_GET['orderAddr'];
+    $this->home_model->addOrder($userid, $totalPrice, $itemids, $recipient, $orderPhone, $orderAddr);
+    $this->home_model->deleteItems($userid, $itemids);
+    redirect(base_url('home/showOrder'));
   }
 
   public function search()

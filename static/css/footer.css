@@ -1,4 +1,14 @@
-@CHARSET "UTF-8";
-.footer{height: 100px;}
-.footer-main{height:100%;position:relative}
-.footer-content { width: 100%;  position: absolute; bottom:0;	}
+.footer {
+    height: 100px;
+}
+
+.footer-main {
+    height: 100%;
+    position: relative
+}
+
+.footer-content {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}

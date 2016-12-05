@@ -66,7 +66,7 @@ $db['default'] = array(
 	'dsn'	=> 'mysql:host=localhost;dbname=shop',
 	'hostname' => 'localhost',
 	'username' => 'root',
-	'password' => 'admin',
+	'password' => 'root',
 	'database' => 'shop',
 	'dbdriver' => 'pdo',
 	'dbprefix' => '',
