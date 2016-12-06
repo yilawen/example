@@ -75,12 +75,15 @@ class Home extends MY_Controller
 
   public function preOrder()
   {
-    $itemIds = $_POST['itemIds'];
-    $totalPrice = $_POST['totalPrice'];
+    $itemIds = $_POST['itemId'];
+    $userId = $_SESSION['user']->userid;
+    $result = $this->home_model->getItemsByItemIds($userId, $itemIds);
+    $items = $result['items'];
+    $totalPrice = $result['totalPrice'];
     $preAddr = $_SESSION['user']->address;
     $prePhone = $_SESSION['user']->telephone;
     $preName = $_SESSION['user']->username;
-    $items = $this->home_model->getItemFromCarByItemIds($userid, $itemIds);
+
     $this->assign('totalPrice', $totalPrice);
     $this->assign('items', $items);
     $this->assign('preName', $preName);
@@ -94,21 +97,20 @@ class Home extends MY_Controller
     $this->loginDetect();
     $userid = $_SESSION['user']->userid;
     $orders = $this->home_model->getOrder($userid);
-    $this->assign('orders', $orders);
-    $this->display('order.html');
+    // $this->assign('orders', $orders);
+    // $this->display('order.html');
+    var_dump($orders);
   }
 
   public function submitOrder()
   {
     $this->loginDetect();
-    $userid = $_SESSION['user']->userid;
-    $totalPrice = $_GET['totalPrice'];
-    $itemids = $_SESSION['preOrder'];
-    $recipient = $_GET['recipient'];
-    $orderPhone = $_GET['orderPhone'];
-    $orderAddr = $_GET['orderAddr'];
-    $this->home_model->addOrder($userid, $totalPrice, $itemids, $recipient, $orderPhone, $orderAddr);
-    $this->home_model->deleteItems($userid, $itemids);
+    $itemIds = $_POST['itemid'];
+    $name = $_POST['name'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $userId = $_SESSION['user']->userid;
+    $this->home_model->addOrder($userId, $itemIds, $name, $phone, $address);
     redirect(base_url('home/showOrder'));
   }
 

@@ -14,6 +14,10 @@
       font-size:12px;
       color: red;
     }
+    #name, #phone, #address {
+      background: white;
+      border: none;
+    }
   </style>
   <title>确认订单</title>
 </head>
@@ -23,18 +27,50 @@
     <{include file="header.html"}>
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
+        <form id="form" action="<{$root}>home/submitOrder" method="post">
+          <div class="panel panel-info">
+            <div class="panel-heading clearfix">
+              <div class="col-md-4">确认收货信息</div>
+              <div class="col-md-2 col-md-offset-6"><span id="edit">编辑<span class="glyphicon glyphicon-pencil"></span></span></div>
+            </div>
+            <div class="panel-body">
+              <p>收货人：<input id="name" name="name" type="text" value="<{$preName}>"></p>
+              <p>联系方式：<input id="phone" name="phone" type="text" value="<{$prePhone}>"></p>
+              <p>地址：<input id="address" name="address" type="text" value="<{$preAddr}>"></p>
+            </div>
+          </div>
 
-        <div class="panel panel-info">
-          <div class="panel-heading clearfix">
-            <div class="col-md-4">确认收货信息</div>
-            <div class="col-md-2 col-md-offset-6"><span id="edit">编辑<span class="glyphicon glyphicon-pencil"></span></span></div>
+          <table class="table" style="border:1px solid #ccc">
+            <tr class="danger">
+              <td>
+                <div class="col-md-5 col-md-offset-1">商品信息</div>
+              </td>
+              <td>单价</td>
+              <td>数量</td>
+              <td>小计</td>
+            </tr>
+            <{foreach $items as $item}>
+            <tr>
+              <td class="col-md-3">
+                <input type="hidden" name="itemid[]" value="<{$item.itemid}>">
+                <div class="col-md-5">
+                <img  class="img-responsive" src="<{$item.itemimg}>">
+                </div>
+                <div class="col-md-5"><{$item.itemname}></div>
+              </td>
+              <td class="col-md-1"><{$item.itemprice}></td>
+              <td class="col-md-1"><{$item.quantity}></td>
+              <td class="col-md-1"><{$item.itemprice*$item.quantity}></td>
+            </tr>
+            <{/foreach}>
+          </table>
+
+          <div class="row">
+            <div class="col-md-3 col-md-offset-5" style="padding-top:10px">总价：<span style="color:red; font-size:18px"><{$totalPrice}></span></div>
+            <div class="col-md-2" style="padding-top:10px"><a href="<{$root}>home/shopcar">返回购物车修改</a></div>
+            <div class="col-md-2"><input type="submit" id="submit" class="btn btn-primary btn-block" value="提交订单"></div>
           </div>
-          <div class="panel-body">
-            <p>收货人：<span id="preName"><{$preName}></span></p>
-            <p>联系方式：<span id="prePhone"><{$prePhone}></span></p>
-            <p>地址：<span id="preAddr"><{$preAddr}></span></p>
-          </div>
-        </div>
+        </form>
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -44,7 +80,6 @@
               </div>
               <div class="modal-body">
                 <form id="editForm" class="form-horizontal">
-
                   <div class="form-group">
                     <label for="editName" class="col-sm-2 control-label">收件人</label>
                     <div class="col-sm-6">
@@ -65,33 +100,16 @@
                       <input type="text" class="form-control" name="editAddr" id="editAddr" placeholder="地址">
                     </div><div class="col-sm-4"></div>
                   </div>
-                </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button id="submitEdit" type="button" class="btn btn-primary">保存修改</button>
+                <input id="editSubmit" type="submit" class="btn btn-primary" value="保存修改">
               </div>
+              </form>
             </div>
           </div>
         </div>
 
-        <table class="table" style="border:1px solid #ccc">
-          <tr class="danger"><td><div class="col-md-5 col-md-offset-1">商品信息</div></td><td>单价</td><td>数量</td><td>小计</td></tr>
-          <{foreach $items as $item}>
-          <tr>
-            <td class="col-md-3"></div><div class="col-md-5"><img  class="img-responsive" src="<{$item->itemimg}>"></div><div class="col-md-5"><{$item->itemname}></div></td>
-            <td class="col-md-1"><{$item->itemprice}></td>
-            <td class="col-md-1"><{$item->quantity}></td>
-            <td class="col-md-1"><{$item->itemprice*$item->quantity}></td>
-          </tr>
-          <{/foreach}>
-        </table>
-
-        <div class="row">
-          <div class="col-md-3 col-md-offset-5" style="padding-top:10px">总价：<span style="color:red; font-size:18px"><{$totalPrice}></span></div>
-          <div class="col-md-2" style="padding-top:10px"><a href="<{$root}>home/shopcar">返回购物车修改</a></div>
-          <div class="col-md-2"><a id="submit" href="<{$totalPrice}>" class="btn btn-primary btn-block">提交订单</a></div>
-        </div>
 
       </div>
     </div>
@@ -102,24 +120,17 @@
   <script type="text/javascript" src="<{$root}>static/js/messages_zh.js"></script>
   <script>
     $(function(){
-      $totalPrice = $("#submit").attr("href");
-      $src = getRootPath()+"/home/submitOrder?totalPrice="+$totalPrice+"&recipient="+$("#preName").text()+"&orderPhone="
-      +$("#prePhone").text()+"&orderAddr="+$("#preAddr").text();
-      $("#submit").attr("href",$src);
+
       $("#edit").click(function(){
         $("#myModal").modal('show');
       });
 
-      $("#submitEdit").click(function(){
-        $("#editForm").submit();
-      });
-
-      $("#submit").click(function(){
-        if($("#preName").text()==""||$("#prePhone").text()==""||$("#preAddr").text()=="") {
-          alert("请先完善收货信息！");
+      $("#submit").click(function() {
+        if(!$("#name").val().trim() || !$("#phone").val().trim() || !$("#address").val().trim()) {
+          alert("请先完善信息");
           return false;
         }
-      });
+      })
 
       $("#editForm").validate({
         rules:{
@@ -127,17 +138,15 @@
           editPhone : "required",
           editAddr : "required"
         },
+        debug: true,
         errorPlacement : function(error,element) {
           error.appendTo(element.parent("div").next("div"));
         },
-        submitHandler : function(form){
-          $("#preName").text($("#editName").val());
-          $("#prePhone").text($("#editPhone").val());
-          $("#preAddr").text($("#editAddr").val());
+        submitHandler: function(form) {
+          $("#name").val($("#editName").val());
+          $("#phone").val($("#editPhone").val());
+          $("#address").val($("#editAddr").val());
           $("#myModal").modal("hide");
-          $src = getRootPath()+"/home/submitOrder?totalPrice="+$totalPrice+"&recipient="+$("#preName").text()+"&orderPhone="
-          +$("#prePhone").text()+"&orderAddr="+$("#preAddr").text();
-          $("#submit").attr("href",$src);
         }
       });
     })

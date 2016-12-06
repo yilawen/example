@@ -18,15 +18,16 @@ class Home_Model extends CI_Model{
   /**
    * 根据标志获取商品组
    * @param string $flag 商品标志
-   * @return object[] 商品对象数组,失败返回false
+   * @return array 商品数组,失败返回false
    */
   public function getItemsByFlag($flag = null)
   {
     if(!isset($flag)) {
       return false;
     }
-    $items = $this->db->select('*')->from('item')->where('flag',$flag)->join('iteminhome','item.itemid=iteminhome.itemid')->get()->result_array();
-    return$items;
+    $items = $this->db->select('*')->from('item')->where('flag',$flag)->
+      join('iteminhome','item.itemid=iteminhome.itemid')->get()->result_array();
+    return $items;
   }
 
   /**
@@ -63,7 +64,8 @@ class Home_Model extends CI_Model{
   public function getItemFromCar($userid, $itemid)
   {
     $data = array('userid'=>$userid,'item.itemid'=>$itemid);
-    $item = $this->db->select('*')->from('shopcar')->where($data)->join('item','shopcar.itemid=item.itemid')->get()->row();
+    $item = $this->db->select('*')->from('shopcar')->
+      where($data)->join('item', 'shopcar.itemid=item.itemid')->get()->row();
     return $item;
   }
 
@@ -74,7 +76,8 @@ class Home_Model extends CI_Model{
    */
   public function getItemFromCarByUserId($userid)
   {
-    $items = $this->db->select('*')->from('shopcar')->where('userid',$userid)->join('item','shopcar.itemid=item.itemid')->get()->result();
+    $items = $this->db->select('*')->from('shopcar')->
+      where('userid',$userid)->join('item','shopcar.itemid=item.itemid')->get()->result();
     return $items;
   }
 
@@ -119,62 +122,85 @@ class Home_Model extends CI_Model{
   }
 
   /**
-   * 通过商品ID数组获取商品对象数组
+   * 通过商品ID数组获取商品数组
    * @param int $userId 用户id
    * @param int[] $itemIds 商品id数组
    */
-  public function getItemFromCarByItemIds($userid, $itemids)
+
+  public function getItemsByItemIds($userId, $itemIds)
   {
-    for($i=0; $i<count($itemids);$i++) {
-      $item = $this->getItemFromCar($userid, $itemids[$i]);
-      $items[$i] = $item;
+    $items = $this->db->select('*')->from('shopcar')->join('item', 'shopcar.itemid=item.itemid')->
+      where('shopcar.userid', $userId)->where_in('item.itemid', $itemIds)->get()->result_array();
+    $totalPrice = 0;
+    $unitPrice = 0;
+    foreach($items as $item) {
+      $unitPrice = $item['quantity'] * $item['itemprice'];
+      $totalPrice += $unitPrice;
     }
-    return $items;
+    return array(
+      'items' => $items,
+      'totalPrice' => $totalPrice
+      );
   }
 
   /**
    * 生成订单
-   * @param int $userid 用户id
+   * @param int $userId 用户id
    * @param int $totalPrice 总价
-   * @param array $itemids 商品id数组
+   * @param array $itemIds 商品id数组
    */
-  public function addOrder($userid, $totalPrice, $itemids, $recipient, $orderPhone, $orderAddr)
+  public function addOrder($userId, $itemIds, $recipient, $orderPhone, $orderAddr)
   {
-    $data = array(
-      'userid' => $userid,
+    $itemInfos = $this->db->select('quantity, itemprice')->from('shopcar')->join('item', 'shopcar.itemid=item.itemid')->
+      where('shopcar.userid', $userId)->where_in('item.itemid', $itemIds)->get()->result_array();
+    $totalPrice = 0;
+    $unitPrice = 0;
+    foreach($itemInfos as $itemInfo) {
+      $unitPrice = $itemInfo['quantity'] * $itemInfo['itemprice'];
+      $totalPrice += $unitPrice;
+    }
+    $order = array(
+      'userid' => $userId,
       'totalPrice' => $totalPrice,
       'orderAddr' => $orderAddr,
       'orderPhone' => $orderPhone,
-      'recipient' => $recipient
+      'recipient' => $recipient,
+      'addtime' => date('Y-m-d H:i:s')
       );
-    $this->db->insert('order', $data);
-    $orderid =  $this->db->insert_id();
-    $this->db->query('update `order` set addtime=now() where orderid='.$orderid);
-    for($i=0;$i<count($itemids);$i++) {
-     $quantity = $this->db->select('quantity')->from('shopcar')->where(array('userid'=>$userid,'itemid'=>$itemids[$i]))->get()->row_array();
-     $quantity = $quantity['quantity'];
-     $this->db->insert('orderdetail',array('orderid'=>$orderid,'itemid'=>$itemids[$i],'quantity'=>$quantity));
-   }
+    $items = $this->db->select('itemid, quantity')->from('shopcar')->
+      where('userid', $userId)->where_in('itemid', $itemIds)->get()->result_array();
+
+    $this->db->trans_start();
+    $this->db->insert('order', $order);
+    $orderId = $this->db->insert_id();
+    foreach($items as &$item) {
+      $item['orderid'] = $orderId;
+    }
+    $this->db->insert_batch('orderdetail', $items);
+    $this->db->where_in('itemid', $itemIds)->delete('shopcar');
+    $this->db->trans_complete();
  }
 
   /**
    * 获取用户所有订单
    * @param int $userid 用户id
    */
-  public function getOrder($userid)
+  public function getOrder($userId)
   {
-    $orders = $this->db->select('*')->from('order')->where('userid', $userid)->order_by('orderid','desc')->get()->result();
-    for($i=0;$i<count($orders);$i++) {
-      $thisItems = null;
-      $orderid = $orders[$i]->orderid;
-      $items = $this->db->select('*')->from('orderdetail')->where('orderid', $orderid)->get()->result();
-      for($j=0;$j<count($items);$j++) {
-        $thisItem = $this->db->select('*')->from('orderdetail')->where('orderdetail.itemid',$items[$j]->itemid)->join('item','item.itemid=orderdetail.itemid')->get()->row();
-        $thisItems[$j] = $thisItem;
+    $orders = $this->db->select('*')->from('order')->join('orderdetail', 'order.orderid=orderdetail.orderid')
+      ->join('item', 'item.itemid=orderdetail.itemid')->where('userid', $userId)->get()->result_array();
+    $result = array();
+    $orderId = null;
+    foreach($orders as $order) {
+      $orderId = $order['orderid'];
+      if(array_key_exists($orderId, $result)) {
+        array_push($result[$orderId], $order);
+      } else {
+        $result[strval($orderId)] = array();
+        array_push($result[$orderId], $order);
       }
-      $orders[$i]->items = $thisItems;
     }
-    return $orders;
+    return $result;
   }
 
   /**
@@ -236,10 +262,5 @@ class Home_Model extends CI_Model{
   {
     $brands = $this->db->distinct()->select('brand')->from('item')->get()->result();
     return $brands;
-  }
-
-  public function test()
-  {
-    $this->db->query('insert into `test`(addtime) values(`now()`)');
   }
 }

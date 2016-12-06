@@ -3,6 +3,7 @@ class User extends MY_controller{
   public function __construct()
   {
      parent::__construct();
+    $this->load->model('user_model');
      session_start();
   }
   public function showLogin()
@@ -14,7 +15,6 @@ class User extends MY_controller{
   {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $this->load->model('user_model');
     $result = $this->user_model->authenticate($username, $password);
     if($result) {
       global $user;
@@ -37,7 +37,6 @@ class User extends MY_controller{
     $password = isset($_POST['password'])?$_POST['password']:null;
     $telephone = $_POST['telephone'] == ''?null:$_POST['telephone'];
     $address = $_POST['address'] == ''?null:$_POST['address'];
-    $this->load->model('user_model');
     $result = $this->user_model->insertUser($username, $password, $telephone, $address);
     if($result) {
       echo true;
@@ -58,7 +57,6 @@ class User extends MY_controller{
   public function userDetail()
   {
     if(isset($_SESSION['user'])) {
-      $this->load->model('user_model');
       $user = $this->user_model->getUserById($_SESSION['user']->userid);
       $this->assign('user', $user);
       $this->display('user_detail.html');
@@ -72,7 +70,6 @@ class User extends MY_controller{
   {
     $username = $_SESSION['user']->username;
     $oldPwd = $_POST['oldPwd'];
-    $this->load->model('user_model');
     $result = $this->user_model->authenticate($username, $oldPwd);
     if($result) {
       $newPwd = $_POST['newPwd'];
@@ -91,7 +88,6 @@ class User extends MY_controller{
         'telephone' => $telephone,
         'address' => $address
     );
-    $this->load->model('user_model');
     $this->user_model->updateInf($_SESSION['user']->userid, $data);
   }
 
