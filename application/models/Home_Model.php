@@ -46,10 +46,11 @@ class Home_Model extends CI_Model{
       );
     $result = $this->getItemFromCar($userid, $itemid);
     if($result) {
-      $result = $this->db->select('quantity')->from('shopcar')->where(array('userid'=>$userid,'itemid'=>$itemid))->get()->row_array();
+      $result = $this->db->select('quantity')->from('shopcar')->
+        where(array('userid' => $userid, 'itemid' => $itemid))->get()->row_array();
       $old = $result['quantity'];
-      $data = array('quantity'=>$old+$quantity);
-      $this->db->where(array('userid'=>$userid,'itemid'=>$itemid))->update('shopcar',$data);
+      $data = array('quantity' => $old + $quantity);
+      $this->db->where(array('userid' => $userid,'itemid' => $itemid))->update('shopcar',$data);
     } else {
       $this->db->insert('shopcar',$data);
     }
@@ -63,7 +64,7 @@ class Home_Model extends CI_Model{
    */
   public function getItemFromCar($userid, $itemid)
   {
-    $data = array('userid'=>$userid,'item.itemid'=>$itemid);
+    $data = array('userid' => $userid, 'item.itemid' => $itemid);
     $item = $this->db->select('*')->from('shopcar')->
       where($data)->join('item', 'shopcar.itemid=item.itemid')->get()->row();
     return $item;
@@ -194,10 +195,19 @@ class Home_Model extends CI_Model{
     foreach($orders as $order) {
       $orderId = $order['orderid'];
       if(array_key_exists($orderId, $result)) {
-        array_push($result[$orderId], $order);
+        array_push($result[$orderId]['items'], $order);
       } else {
-        $result[strval($orderId)] = array();
-        array_push($result[$orderId], $order);
+        $result[$orderId] = array(
+          'orderInfo' => array(
+            'totalPrice' => $order['totalPrice'],
+            'orderPhone' => $order['orderphone'],
+            'recipient' => $order['recipient'],
+            'addTime' => $order['addtime'],
+            'address' => $order['orderaddr']
+            ),
+          'items' => array()
+          );
+        array_push($result[$orderId]['items'], $order);
       }
     }
     return $result;

@@ -1,11 +1,26 @@
 <?php
-class User extends MY_controller{
+class User extends MY_Controller
+{
   public function __construct()
   {
-     parent::__construct();
+    parent::__construct();
     $this->load->model('user_model');
-     session_start();
+    $this->load->helper('url');
+    session_start();
+    if(isset($_SESSION['user'])) {
+      $this->assign('username', $_SESSION['user']->username);
+    } else {
+      $this->assign('username', null);
+    }
   }
+
+  public function loginDetect()
+  {
+    if(!isset($_SESSION['user'])) {
+      redirect(base_url('user/showLogin'));
+    }
+  }
+
   public function showLogin()
   {
     $this->display('login.html');
@@ -45,29 +60,17 @@ class User extends MY_controller{
     }
   }
 
-  public function isLogin()
-  {
-    if(isset($_SESSION['user'])) {
-       echo $_SESSION['user']->username;
-    } else {
-      echo false;
-    }
-  }
-
   public function userDetail()
   {
-    if(isset($_SESSION['user'])) {
-      $user = $this->user_model->getUserById($_SESSION['user']->userid);
-      $this->assign('user', $user);
-      $this->display('user_detail.html');
-    } else {
-      $this->load->helper('url');
-      redirect(base_url('user/showLogin'));
-    }
+    $this->loginDetect();
+    $user = $this->user_model->getUserById($_SESSION['user']->userid);
+    $this->assign('user', $user);
+    $this->display('user_detail.html');
   }
 
   public function updatePwd()
   {
+    $this->loginDetect();
     $username = $_SESSION['user']->username;
     $oldPwd = $_POST['oldPwd'];
     $result = $this->user_model->authenticate($username, $oldPwd);
@@ -82,12 +85,13 @@ class User extends MY_controller{
 
   public function updateInf()
   {
+    $this->loginDetect();
     $address = $_POST['address'];
     $telephone = $_POST['telephone'];
     $data = array(
-        'telephone' => $telephone,
-        'address' => $address
-    );
+      'telephone' => $telephone,
+      'address' => $address
+      );
     $this->user_model->updateInf($_SESSION['user']->userid, $data);
   }
 

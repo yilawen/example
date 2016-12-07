@@ -7,9 +7,18 @@
         <div class="row">
           <div class="col-md-6">
             <div class="row">
-              <div class="col-md-2" style="color:#C40000"><span class="glyphicon glyphicon-home"></span><a href="<{$root}>home/index">首页</a></div>
+              <div class="col-md-2" style="color:#C40000">
+                <span class="glyphicon glyphicon-home"></span>
+                <a href="<{$root}>home/index">首页</a>
+              </div>
               <div class="col-md-4"><p>欢迎来到G.fruit！</p></div>
-              <div id="isLogin" class="col-md-3"><a href="<{$root}>User/ShowLogin">请登录</a></div>
+              <div id="isLogin" class="col-md-3">
+                <{if $username}>
+                  <span style='color:red'><{$username}></span><a href="<{$root}>User/Logout">注销</a>
+                <{else}>
+                <a href="<{$root}>User/ShowLogin">请登录</a>
+                <{/if}>
+              </div>
               <div class="col-md-2"><a href="<{$root}>User/showRegister">注册</a></div>
             </div>
           </div>

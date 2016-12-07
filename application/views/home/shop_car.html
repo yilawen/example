@@ -79,12 +79,13 @@
   function calculate()
   {
     var checklist = $(".checkbox");
+    var itemId;
     $total = 0;
     for(var i = 0; i < checklist.length; i++)
     {
       if(checklist[i].checked) {
-        $itemid = checklist[i].id;
-        $total += parseFloat($("#itemall"+$itemid).text());
+        itemId = checklist[i].id;
+        $total += parseFloat($("#itemall"+itemId).text());
       }
     }
     $("#totalPrice").text($total);
@@ -151,70 +152,45 @@
     });
 
     $("input:text").change(function(){
-      $itemId = $(this).parents("tr").data("id");
-      $quantity = parseInt($("#itemq"+$itemId).val());
+      var itemId;
+      itemId = $(this).parents("tr").data("id");
+      var quantity = parseInt($("#itemq"+itemId).val());
       $.ajax({
         url : root + "/home/alterShopCar",
         data : {
-          itemid : $itemId,
-          quantity : $quantity
+          itemid : itemId,
+          quantity : quantity
         },
         type : "post",
         dataType : "html",
         success : function(data){
-          $unitPrice = parseInt($("#itemp"+$itemId).html());
-          $total = $unitPrice*$quantity;
-          $("#itemall"+$itemId).html($total);
+          var unitPrice = parseInt($("#itemp"+itemId).html());
+          var total = unitPrice * quantity;
+          $("#itemall"+itemId).html(total);
           calculate();
         },
-        error : function(){
-
-        }
       });
     });
 
     $(".delete").click(function(){
-      $itemId = $(this).parents("tr").data("id");
+      var itemId;
+      itemId = $(this).parents("tr").data("id");
       $select = confirm("确认要删除？");
       if($select) {
         $.ajax({
           url : root + "/home/deleteItem",
           data : {
-            itemid : $itemId,
+            itemid : itemId,
           },
           type : "post",
           dataType : "html",
           success : function(data) {
-            $("#item" + $itemId).remove();
+            $("#item" + itemId).remove();
             calculate();
           }
         })
       }
     });
-
-    // $("#settle").click(function(){
-    //   $itemIds = new Array();
-    //   var checklist = $(".checkbox");
-    //   var j = 0;
-    //   for(var i = 0; i < checklist.length; i++)
-    //   {
-    //     if(checklist[i].checked) {
-    //       $itemIds.push(checklist[i].id);
-    //     }
-    //   };
-    //   $.ajax({
-    //     url : root + "/home/preItems",
-    //     data : {
-    //       itemIds : $itemIds,
-    //       totalPrice :  $("#totalPrice").text()
-    //     },
-    //     type : "post",
-    //     dataType : "html",
-    //     success : function(data) {
-    //       window.location.href = root + "/home/preOrder";
-    //     }
-    //   });
-    // });
   })
 </script>
 </body>

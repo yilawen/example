@@ -8,6 +8,11 @@ class Home extends MY_Controller
     session_start();
     $this->load->helper('url');
     $this->load->model('home_model');
+    if(isset($_SESSION['user'])) {
+      $this->assign('username', $_SESSION['user']->username);
+    } else {
+      $this->assign('username', null);
+    }
   }
 
   public function loginDetect()
@@ -97,9 +102,8 @@ class Home extends MY_Controller
     $this->loginDetect();
     $userid = $_SESSION['user']->userid;
     $orders = $this->home_model->getOrder($userid);
-    // $this->assign('orders', $orders);
-    // $this->display('order.html');
-    var_dump($orders);
+    $this->assign('orders', $orders);
+    $this->display('order.html');
   }
 
   public function submitOrder()
